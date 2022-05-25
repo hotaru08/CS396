@@ -7,6 +7,8 @@ Description:
 
 	Entry point of the application.
 ******************************************************************************/
+#include "ECS\FiE_ECS_includes.h"
+
 struct Vector2D
 {
 	float x, y;
@@ -14,14 +16,14 @@ struct Vector2D
 
 struct Position
 {
-	float m_x;
-	float m_y;
+	float m_px;
+	float m_py;
 };
 
 struct Scale
 {
-	float m_x;
-	float m_y;
+	float m_sx;
+	float m_sy;
 };
 
 int main(void)
