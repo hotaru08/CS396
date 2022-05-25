@@ -1,11 +1,21 @@
 # Prerequisites
 *.d
+*.db
+*.db-shm
+*.db-wal
+*.opendb
+*.ipch
+*.manifest
+*.sqlite
+*.json
 
 # Compiled Object files
 *.slo
 *.lo
 *.o
 *.obj
+*.suo
+*.testlog
 
 # Precompiled Headers
 *.gch
@@ -30,3 +40,4 @@
 *.exe
 *.out
 *.app
+

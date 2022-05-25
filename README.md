@@ -1,2 +1,3 @@
-# CS396
-CS396 ECS development
+# CS396 Building a ECS
+
+<TODO>: Setup premake to have simple build system
