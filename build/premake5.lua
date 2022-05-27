@@ -18,12 +18,12 @@ depFilePath			= "dependencies"
 
 ------ Include Directories -------------------------------------------
 IncludeDir = {}
-IncludeDir["glut"] 	= "%{prj.location}/../../dependencies/glut"
+IncludeDir["glut"] 	= "%{prj.location}/../../dependencies/glut/include"
 
 ------ PotatoEngine --------------------------------------------------
 project "CS396_ECS_v1"
 	location (projectFilesPath)
-	kind "WindowedApp"
+	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++20"
     warnings "Extra"
@@ -52,20 +52,10 @@ project "CS396_ECS_v1"
 	includedirs
 	{
         -- Internal Source Files
-		sourceFilesPath .. "/ECS"
+		sourceFilesPath .. "/ECS",
         
         -- External Libraries
-		-- "%{IncludeDir.fmod}",
-        -- "%{IncludeDir.FreeImage}",
-        -- "%{IncludeDir.freetype}",
-        -- "%{IncludeDir.glad}",
-        -- "%{IncludeDir.glm}",
-        -- "%{IncludeDir.Mono}",
-        -- "%{IncludeDir.rapidjson}",
-        -- "%{IncludeDir.spdlog}",
-        -- "%{IncludeDir.AwesomeFonts}",
-		-- "%{IncludeDir.tracy}",
-		-- "%{IncludeDir.tinyddsloader}"
+		"%{IncludeDir.glut}"
 	}
     
     -- Prepocessor defines
@@ -81,10 +71,21 @@ project "CS396_ECS_v1"
 		"MultiProcessorCompile"
 	}
 
+	libdirs
+	{ 
+		
+	}
+
+	links
+	{
+
+	}
+
     -- Properties under "All" Configuration
 	filter "system:windows"
 		staticruntime "On"
 		systemversion "latest"
+		disablewarnings "4201"
 
     -- Properties under "Debug" Configuration
 	filter "configurations:Debug"

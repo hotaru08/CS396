@@ -1,3 +1,12 @@
+[//]: # (This may be the most platform independent comment)
+[//]: # (/******************************************************************************)
+[//]: # (filename:	README.md)
+[//]: # (author:	Jolyn Wong Kaiyi, wong.k@digipen.edu)
+[//]: # (Project:	CS396 Assignment 01)
+[//]: # (Description:)
+[//]: # (	Readme file for instruction on how to build the project)
+[//]: # (******************************************************************************/)
+
 # CS396 Building a ECS
 ECS built for Assignment 01 of CS396, Digipen SG.
 
