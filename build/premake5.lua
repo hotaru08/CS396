@@ -10,33 +10,17 @@ workspace "CS396_ECS"           -- Solution Name
 	}
 
 -- Type Aliases
-outputdir        = "bin/%{prj.name}/%{cfg.buildcfg}"
-objOutputDir     = "bin-int/%{prj.name}/%{cfg.buildcfg}"
-sourceFilesPath  = "%{prj.location}/../../src"
-projectFilesPath = "projects"
+outputdir        	= "bin/%{prj.name}/%{cfg.buildcfg}"
+objOutputDir     	= "bin-int/%{prj.name}/%{cfg.buildcfg}"
+sourceFilesPath  	= "%{prj.location}/../../src"
+projectFilesPath 	= "projects"
+depFilePath			= "dependencies"
 
 ------ Include Directories -------------------------------------------
--- IncludeDir = {}
--- IncludeDir["fmod"]              = "%{prj.name}/Libraries/fmod/include"
--- IncludeDir["FreeImage"]         = "%{prj.name}/Libraries/FreeImage/include"
--- IncludeDir["freetype"]          = "%{prj.name}/Libraries/freetype/include"
--- IncludeDir["glad"]              = "%{prj.name}/Libraries/glad/include"
--- IncludeDir["glm"]               = "%{prj.name}/Libraries/glm/glm"
--- IncludeDir["Mono"]              = "%{prj.name}/Libraries/Mono/include"
--- IncludeDir["rapidjson"]         = "%{prj.name}/Libraries/rapidjson/include"
--- IncludeDir["spdlog"]            = "%{prj.name}/Libraries/spdlog/include"
--- IncludeDir["physx"]             = "%{prj.name}/Libraries/physx/include"
--- IncludeDir["assimp"]            = "%{prj.name}/Libraries/assimp/include"
--- IncludeDir["AwesomeFonts"]      = "%{prj.name}/Libraries/IconFontAwesome"
--- IncludeDir["tracy"]				= "%{prj.name}/Libraries/tracy/"
--- IncludeDir["tinyddsloader"]		= "%{prj.name}/Libraries/tinyddsloader/"
+IncludeDir = {}
+IncludeDir["glut"] 	= "%{prj.location}/../../dependencies/glut"
 
--- IncludeDir["imgui"]             = "PotatoEngine/Libraries/imgui"
--- IncludeDir["imgui_backend"]     = "PotatoEngine/Libraries/imgui/backends"
--- IncludeDir["ImGuizmo"]          = "PotatoEngine/Libraries/ImGuizmo"
-
-
------- PotatoEngine -------------------------------------------
+------ PotatoEngine --------------------------------------------------
 project "CS396_ECS_v1"
 	location (projectFilesPath)
 	kind "WindowedApp"

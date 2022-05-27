@@ -37,9 +37,12 @@
 *.lib
 
 # Executables
-# *.exe
+*.exe
 *.out
 *.app
+
+# Folders
+dependencies
 
 # Visual Studio files
 *.sln
