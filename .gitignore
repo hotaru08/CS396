@@ -37,7 +37,12 @@
 *.lib
 
 # Executables
-*.exe
+# *.exe
 *.out
 *.app
 
+# Visual Studio files
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
