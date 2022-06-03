@@ -1,5 +1,5 @@
 /******************************************************************************
-filename:	includes.h
+filename:	FiE_ECS_includes.h
 author:		Jolyn Wong Kaiyi, wong.k@digipen.edu
 Project:	CS396 Assignment 01
 
@@ -19,14 +19,27 @@ Description:
 #include <type_traits>
 #include <memory>
 #include <utility>
+#include <array>
+#include <span>
 
 
 // ----------------------------------------------------------------------------
 // ECS includes
 // ----------------------------------------------------------------------------
-#include <Info/FiE_ECS_SharedInfo.h>
 
-#include <Component/FiE_Component.h>
-#include <Component/FiE_ComponentManager.h>
+/* Shared Info */
+#include <Info\FiE_ECS_SharedInfo.h>
 
-#include <Entity/FiE_Entity.h>
+/* Components */
+#include <Component\FiE_Component.h>
+#include <Component\FiE_ComponentManager.h>
+
+/* Memory */
+#include <Memory\FiE_Pool.h>
+
+/* Systems */
+
+
+
+/* Entities */
+#include <Entity\FiE_Entity.h>

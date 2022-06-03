@@ -7,9 +7,6 @@ Description:
 
 	Contains information regarding components and functionalities.
 
-	Questions:
-		- component uid
-		- what is size for again and how it is assigned / used
 ******************************************************************************/
 namespace FireflyEngine::component
 {
@@ -31,15 +28,15 @@ namespace FireflyEngine::component
 		using move_ptr_fn		 = move_fn*;
 
 		// Constant definitions
-		static constexpr sharedinfo::component_uid_t invalid_info_v = 
-			static_cast<sharedinfo::component_uid_t>(-1);		//<! UID used to define a invalid id
-
-		mutable sharedinfo::component_uid_t	 m_UID;				//<! Unique ID of component
-		sharedinfo::component_size_t m_size;					//<! Size of memory used by component
-
-		constructor_ptr_fn	m_pConstructor;						//<! Pointer to a constructor
-		destructor_ptr_fn	m_pDestructor;						//<! Pointer to a destructor
-		move_ptr_fn			m_pMoveFunc;				 		//<! Pointer to a move function
+		static constexpr auto invalid_info_v = 
+			static_cast<sharedinfo::component_uid_t>(-1);	 //<! UID used to define a invalid id											   
+															 
+		mutable sharedinfo::component_uid_t	 m_UID;			 //<! Unique ID of component
+		sharedinfo::component_size_t		 m_size;		 //<! Size of memory used by component	   
+															 
+		constructor_ptr_fn					 m_pConstructor; //<! Pointer to a constructor
+		destructor_ptr_fn					 m_pDestructor;	 //<! Pointer to a destructor
+		move_ptr_fn							 m_pMoveFunc;	 //<! Pointer to a move function
 	};
 
 

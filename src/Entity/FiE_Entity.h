@@ -6,11 +6,12 @@ Project:	CS396 Assignment 01
 Description:
 
 	Contains information regarding entities and functionalities.
+
 ******************************************************************************/
 namespace FireflyEngine::entity
 {
 	// ------------------------------------------------------------------------
-	// Entity information
+	// Entity Information
 	// ------------------------------------------------------------------------
 	union Entity final
 	{
@@ -33,6 +34,27 @@ namespace FireflyEngine::entity
 			sharedinfo::entity_index_t		m_globalIndex;		//<! Global index of entity (for entity container)
 			validation						m_validation;		//<! Check for validness of entity
 		};
+
+		// Compare between entities
+		bool operator==(const Entity& _otherEnt) const noexcept
+		{
+			return m_entityID == _otherEnt.m_entityID;
+		}
+
+		// Check if entity is alive
+		bool IsAlive() const noexcept
+		{
+			return m_validation.m_isAlive;
+		}
 	};
 	static_assert(sizeof(sharedinfo::entity_id_t) == sizeof(Entity));
+
+
+	// ------------------------------------------------------------------------
+	// Global Entity Information ( wrapper to refer to internal Entity Data) 
+	// ------------------------------------------------------------------------
+	struct GlobalEntity final
+	{
+
+	};
 }

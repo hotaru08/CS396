@@ -8,6 +8,10 @@ Description:
 	Manager that handles the interaction with components.
 	Actions includes:
 		- Registering of components
+	
+	Questions:
+		- static uniqueComponents? 2 component manager?
+
 ******************************************************************************/
 #pragma once
 
@@ -16,9 +20,9 @@ namespace FireflyEngine::component
 	// ------------------------------------------------------------------------
 	// Manager that handles the components
 	// ------------------------------------------------------------------------
-	class ComponentMgr
+	class manager final
 	{
-		sharedinfo::component_uid_t m_uniqueComponents;	//<! How many unqiue components are registered
+		static sharedinfo::component_uid_t m_uniqueComponents;	//<! How many unqiue components are registered
 
 		// For internally registering component
 		template < typename Component >

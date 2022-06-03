@@ -1,4 +1,3 @@
-#include "FiE_ComponentManager.h"
 /******************************************************************************
 filename:	FiE_ComponentManager.hpp
 author:		Jolyn Wong Kaiyi, wong.k@digipen.edu
@@ -15,7 +14,7 @@ Description:
 namespace FireflyEngine::component
 {
 	template < typename Component >
-	inline void ComponentMgr::RegisterComponent() noexcept
+	inline void manager::RegisterComponent() noexcept
 	{
 		// Reference to component's information
 		constexpr auto& uid = ref_info_v< Component >.m_UID;
@@ -27,7 +26,7 @@ namespace FireflyEngine::component
 	}
 
 	template < typename... Components >
-	inline void ComponentMgr::RegisterComponents() noexcept
+	inline void manager::RegisterComponents() noexcept
 	{
 		(RegisterComponent< Components >(), ...);
 	}

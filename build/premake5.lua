@@ -58,7 +58,7 @@ project "CS396_ECS_v1"
 	includedirs
 	{
         -- Internal Source Files
-		sourceFilesPath .. "/ECS",
+		sourceFilesPath .. "/",
         
         -- External Libraries
 		"%{IncludeDir.glut}"

@@ -45,6 +45,7 @@
 dependencies
 bin
 bin-int
+.vs
 
 # Visual Studio files
 *.sln

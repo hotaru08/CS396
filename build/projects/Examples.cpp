@@ -1,5 +1,5 @@
 /******************************************************************************
-filename:	main.cpp
+filename:	Examples.cpp
 author:		Jolyn Wong Kaiyi, wong.k@digipen.edu
 Project:	CS396 Assignment 01
 
@@ -34,15 +34,14 @@ struct Rotation
 
 int main(void)
 {
-	std::unique_ptr<FireflyEngine::component::ComponentMgr> compMgr = 
-		std::make_unique<FireflyEngine::component::ComponentMgr>();
+	std::unique_ptr<FireflyEngine::component::manager> compMgr =
+		std::make_unique<FireflyEngine::component::manager>();
 
 	compMgr->RegisterComponents<
 		Position,
 		Rotation,
 		Scale
 	>();
-
 
 	std::cout << FireflyEngine::component::ref_info_v< Scale >.m_UID << std::endl;
 	std::cout << FireflyEngine::component::ref_info_v< Scale >.m_UID << std::endl;
