@@ -37,6 +37,12 @@ project "CS396_ECS_v1"
     -- Adding Files into project
 	files
 	{
+		-- For example files
+		projectFilesPath .. "/**.cpp",
+		projectFilesPath .. "/**.h",
+		projectFilesPath .. "/**.hpp",
+
+		-- Actual ECS files
 		sourceFilesPath .. "/**.h",
         sourceFilesPath .. "/**.hpp",
 		sourceFilesPath .. "/**.cpp"
