@@ -5,7 +5,7 @@ Project:	CS396 Assignment 01
 
 Description:
 
-	Contains information regarding entities and functionalities.
+	Contains information regarding entity and its functionalities.
 
 ******************************************************************************/
 namespace FireflyEngine::entity
@@ -21,7 +21,7 @@ namespace FireflyEngine::entity
 			sharedinfo::entity_valid_t		m_validationID;		//<! Validation ID of entity
 			struct
 			{
-				sharedinfo::entity_valid_t	m_generatedID : 31,	//<! ID of generated entity
+				sharedinfo::entity_valid_t	m_generation  : 31,	//<! ID of generated entity
 											m_isAlive	  : 1;	//<! Flag checking if entity is alive
 			};
 		};
@@ -31,7 +31,7 @@ namespace FireflyEngine::entity
 		sharedinfo::entity_id_t				m_entityID;			//<! Index of entity
 		struct
 		{
-			sharedinfo::entity_index_t		m_globalIndex;		//<! Global index of entity (for entity container)
+			sharedinfo::entity_index_t		m_globalIndex;		//<! Index of entity found in storage container
 			validation						m_validation;		//<! Check for validness of entity
 		};
 

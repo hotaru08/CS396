@@ -18,14 +18,23 @@ namespace FireflyEngine::pool
 	// ------------------------------------------------------------------------
 	// Archetype's Pool Information
 	// ------------------------------------------------------------------------
-	struct instance final
+	class ArchetypePool final
 	{
-		// Rules of 3 - construct, destruct, copy
-		instance() noexcept = default;
-		~instance() noexcept;
+		std::uint32_t																		 m_size;       //<! Current size / number of entities in pool
+		std::array< std::byte*, FireflyEngine::sharedinfo::max_num_components_per_entity_v > m_components; //<! Array of pointers that points to the different components of archetype
+		std::span < FireflyEngine::component::Info* const >									 m_compInfos;  //<! Container storing the components' info 
 
-		instance(const instance& _otherInst) noexcept			 = delete; // Unable to copy same pool data to other pools
-		instance& operator=(const instance& _otherInst) noexcept = delete;
+
+		void AppendNewPage() noexcept;
+
+	public:
+
+		// Rules of 3 - construct, destruct, copy
+		ArchetypePool() noexcept = default;
+		~ArchetypePool() noexcept;
+
+		ArchetypePool(const ArchetypePool& _otherInst) noexcept			   = delete; // Unable to copy same pool data to other pools
+		ArchetypePool& operator=(const ArchetypePool& _otherInst) noexcept = delete;
 
 		// ------------------------------------------------------------------------
 		// Pool Functions
@@ -34,15 +43,16 @@ namespace FireflyEngine::pool
 		// Initializes pool with defined archetype utilizing this pool
 		void Initialize() noexcept;
 
-		// Adds memory 
+		// Appends and initialize new components to components' pool
 		void Append() noexcept;
 
-		// Deletes 
-		void Delete() noexcept;
+		// Deletes and removes components from components' pool
+		void Delete(const FireflyEngine::sharedinfo::entity_index_t _entityIndex) noexcept;
 
-		// 
+		// Clear and removes all components in the pools
 		void Clear() noexcept;
 
+		// Retrieves the current number of components used
 		std::uint32_t GetSize() const noexcept;
 
 
@@ -53,12 +63,10 @@ namespace FireflyEngine::pool
 		// Finds for the index where the component to be found is located in this pool
 		constexpr std::int32_t FindComponentTypeInPool(const FireflyEngine::sharedinfo::component_uid_t& _uid) const noexcept;
 
-		// Retrieves the 
+		// Retrieves the specified component at specified entity index
 		template < typename Component >
 		Component& GetComponent(const FireflyEngine::sharedinfo::entity_index_t& _entityIndex) const noexcept;
-
-		std::uint32_t																		 m_size;       //<! Current size / number of entities in pool
-		std::array< std::byte*, FireflyEngine::sharedinfo::max_num_components_per_entity_v > m_components; //<! Array of pointers that points to the different components of archetype
-		std::span< FireflyEngine::component::info* const >									 m_compInfos;  //<! Container storing the components' info 
 	};
 }
+
+#include <Archetype\FiE_Pool.hpp>

@@ -13,26 +13,33 @@ Description:
 namespace FireflyEngine::sharedinfo
 {
 	// ------------------------------------------------------------------------
+	// Identifiers
+
+	using entity_id_t		= std::uint64_t;				 //<! Type of ID of entity 
+	using entity_index_t	= std::uint32_t;				 //<! Type of Index of entity
+	using entity_valid_t	= entity_index_t;				 //<! Type of Validation of entity
+
+	using component_uid_t	= std::uint32_t;				 //<! Based on max number of components
+	using component_size_t	= std::uint32_t;				 //<! For storing component size
+
+	using system_uid_t		= std::uint32_t;				 //<! Based on max number of systems
+
+
+	// ------------------------------------------------------------------------
 	// Expressions
 
 	// Memory management
 	constexpr auto virtual_page_size_v				= 4096;	 //<! 4k bytes (4Mb) as per specificed
 															 
-	// Component											 
+	// Component
+	constexpr auto invalid_info_v = std::numeric_limits< sharedinfo::component_uid_t >::max(); //<! UID used to define a invalid id
+
 	constexpr auto max_num_components_types_v		= 128;	 //<! Max number of components registered
 	constexpr auto max_num_components_per_entity_v	= 32;	 //<! Max number of component each entity can have
 															 
 	// Entity												 
-	constexpr auto max_num_entity_per_pool_v		= 1000;	 //<! Max number of entities in each memory pool
+	constexpr auto max_num_entity_per_page_v		= 1000;	 //<! Max number of entities in each memory pool page
 	constexpr auto max_num_entity_total_v			= 10000; //<! Max number of entities that can be generated at a time
 
-	// ------------------------------------------------------------------------
-	// Identifiers
 
-	using entity_id_t	   = std::uint64_t;
-	using entity_index_t   = std::uint32_t;
-	using entity_valid_t   = entity_index_t;
-
-	using component_uid_t  = std::uint16_t;					 //<! Based on max number of components
-	using component_size_t = std::uint32_t;					 //<! For storing component size
 }

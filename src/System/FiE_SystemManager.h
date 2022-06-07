@@ -1,26 +1,26 @@
 /******************************************************************************
-filename:	FiE_ComponentManager.h
+filename:	FiE_SystemManager.h
 author:		Jolyn Wong Kaiyi, wong.k@digipen.edu
 Project:	CS396 Assignment 01
 
 Description:
 
-	Manager that handles the interaction with components.
+	Manager that handles the interaction with systems.
 	Actions includes:
-		- Registering of components
+		- Registering of systems
 
 ******************************************************************************/
 #pragma once
 
-namespace FireflyEngine::component
+namespace FireflyEngine::system
 {
 	// ------------------------------------------------------------------------
 	// Manager that handles the components
 	// ------------------------------------------------------------------------
 	class Manager final
 	{
-		//<! How many unqiue components are registered
-		inline static sharedinfo::component_uid_t m_numComponents;
+		//<! How many unqiue systems are registered
+		inline static sharedinfo::system_uid_t m_numSystems; 
 
 
 		// Rule of 5 - constructor, copy, move
@@ -31,18 +31,18 @@ namespace FireflyEngine::component
 		Manager& operator=(const Manager&& _otherMgr) noexcept	= delete;
 
 
-		// For internally registering component
-		template < typename Component >
-		void RegisterComponent() noexcept;
+		// For internally registering a system
+		template < typename System >
+		void RegisterSystem() noexcept;
 
 	public:
 
 		Manager()												= default;
 
-		// Exposed to register all possible components
-		template < typename... Components >
-		void RegisterComponents() noexcept;
+		// Exposed to register all possible systems
+		template < typename... Systems >
+		void RegisterSystems() noexcept;
 	};
 }
 
-#include <Component\FiE_ComponentManager.hpp>
+#include <System\FiE_SystemManager.hpp>

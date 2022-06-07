@@ -35,11 +35,10 @@ Description:
 #include <Component\FiE_ComponentManager.h>
 
 /* Memory */
-#include <Memory\FiE_Pool.h>
+#include <Archetype\FiE_Pool.h>
 
 /* Systems */
-
-
+#include <System\FiE_SystemManager.h>
 
 /* Entities */
 #include <Entity\FiE_Entity.h>

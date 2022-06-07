@@ -34,8 +34,8 @@ struct Rotation
 
 int main(void)
 {
-	std::unique_ptr<FireflyEngine::component::manager> compMgr =
-		std::make_unique<FireflyEngine::component::manager>();
+	std::unique_ptr<FireflyEngine::component::Manager> compMgr =
+		std::make_unique<FireflyEngine::component::Manager>();
 
 	compMgr->RegisterComponents<
 		Position,
@@ -43,8 +43,8 @@ int main(void)
 		Scale
 	>();
 
-	std::cout << FireflyEngine::component::ref_info_v< Scale >.m_UID << std::endl;
-	std::cout << FireflyEngine::component::ref_info_v< Scale >.m_UID << std::endl;
+	std::cout << FireflyEngine::component::info_v< Scale >.m_UID << std::endl;
+	std::cout << FireflyEngine::component::info_v< Scale >.m_UID << std::endl;
 
 
 	
