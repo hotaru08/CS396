@@ -9,6 +9,9 @@ Description:
 ******************************************************************************/
 #include <FiE_ECS_includes.h>
 
+// <TODO>: COMMNENT OUT
+#define DEVELOPMENT_MODE
+
 struct Vector2D
 {
 	float x, y;
@@ -32,23 +35,35 @@ struct Rotation
 	float m_ry;
 };
 
+#define ALL_COMPONENTS \
+	Position, Rotation, Scale
+
+void TestCases()
+{
+	/* Test 01 - Registering components */
+	{
+		std::unique_ptr<FireflyEngine::component::Manager> compMgr =
+			std::make_unique<FireflyEngine::component::Manager>();
+
+		compMgr->RegisterComponents< ALL_COMPONENTS >();
+
+		std::cout << FireflyEngine::component::info_v< Scale >.m_UID << std::endl;
+		std::cout << FireflyEngine::component::info_v< Scale >.m_UID << std::endl;
+	}
+
+	/* Test 02 - Adding Entities, */
+}
+
+void RenderECS()
+{
+
+}
+
 int main(void)
 {
-	std::unique_ptr<FireflyEngine::component::Manager> compMgr =
-		std::make_unique<FireflyEngine::component::Manager>();
-
-	compMgr->RegisterComponents<
-		Position,
-		Rotation,
-		Scale
-	>();
-
-	std::cout << FireflyEngine::component::info_v< Scale >.m_UID << std::endl;
-	std::cout << FireflyEngine::component::info_v< Scale >.m_UID << std::endl;
-
-
-	
-
-
-
+#ifdef DEVELOPMENT_MODE
+	TestCases();
+#else
+	RenderECS();
+#endif
 }

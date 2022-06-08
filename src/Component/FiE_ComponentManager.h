@@ -19,8 +19,8 @@ namespace FireflyEngine::component
 	// ------------------------------------------------------------------------
 	class Manager final
 	{
-		//<! How many unqiue components are registered
-		inline static sharedinfo::component_uid_t m_numComponents;
+
+		inline static sharedinfo::component_uid_t m_numComponents;		  //<! How many unqiue components are registered
 
 
 		// Rule of 5 - constructor, copy, move

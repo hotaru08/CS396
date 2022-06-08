@@ -12,6 +12,10 @@ Description:
 // ----------------------------------------------------------------------------
 // system includes
 // ----------------------------------------------------------------------------
+
+#define NOMINMAX
+#include <Windows.h>
+
 #include <iostream>
 #include <cstdint>
 #include <cstddef>
@@ -21,6 +25,7 @@ Description:
 #include <utility>
 #include <array>
 #include <span>
+#include <cassert>
 
 
 // ----------------------------------------------------------------------------
@@ -36,6 +41,9 @@ Description:
 
 /* Memory */
 #include <Archetype\FiE_Pool.h>
+
+/* Archetype */
+#include <Archetype\FiE_Archetype.h>
 
 /* Systems */
 #include <System\FiE_SystemManager.h>

@@ -38,7 +38,7 @@ namespace FireflyEngine::sharedinfo
 	constexpr auto max_num_components_per_entity_v	= 32;	 //<! Max number of component each entity can have
 															 
 	// Entity												 
-	constexpr auto max_num_entity_per_page_v		= 1000;	 //<! Max number of entities in each memory pool page
+	constexpr auto max_num_entity_per_pool_v		= 1000;	 //<! Max number of entities in each memory pool
 	constexpr auto max_num_entity_total_v			= 10000; //<! Max number of entities that can be generated at a time
 
 

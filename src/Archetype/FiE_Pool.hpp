@@ -15,14 +15,56 @@ Description:
 ******************************************************************************/
 namespace FireflyEngine::pool
 {
+	// ------------------------------------------------------------------------
+	// Helper Functions
+	// ------------------------------------------------------------------------
+
+	// Gets the page that has enough free memory for new entity
+	constexpr std::int32_t GetCurrPageOfEntity(
+		const component::Info& _compInfo, 
+		const sharedinfo::entity_index_t _entityIndex) noexcept
+	{
+		return (_entityIndex * _compInfo.m_size) / sharedinfo::virtual_page_size_v;
+	}
+
+
+	// ------------------------------------------------------------------------
+	// Member Functions
+	// ------------------------------------------------------------------------
+
+	inline ArchetypePool::ArchetypePool() noexcept
+		: m_size { 0 }
+	{
+	}
+
+	inline ArchetypePool::ArchetypePool(component_infos_t _componentInfos) noexcept
+		: ArchetypePool { }
+	{
+		Initialize(_componentInfos);
+	}
+
 	inline ArchetypePool::~ArchetypePool()
 	{
 
 	}
 	
-	inline void ArchetypePool::Initialize() noexcept
+	inline void ArchetypePool::Initialize(component_infos_t _componentInfos) noexcept
 	{
+		m_compInfos = _componentInfos;
 
+		// For each component in archetype, allocate virtual memory
+		const auto& size = m_compInfos.size();
+		for (unsigned i = 0; i < size; ++i)
+		{
+			assert(m_compInfos[i]->m_size <= sharedinfo::virtual_page_size_v);
+
+			const auto& page = GetCurrPageOfEntity(*m_compInfos[i], sharedinfo::max_num_entity_per_pool_v) + 1;
+			m_components[i] = reinterpret_cast<std::byte*>(
+				VirtualAlloc(m_components[i], page * sharedinfo::virtual_page_size_v, MEM_RESERVE, PAGE_NOACCESS)
+			);
+
+			assert(m_components[i]);
+		}
 	}
 
 	inline void ArchetypePool::Append() noexcept
@@ -40,7 +82,8 @@ namespace FireflyEngine::pool
 
 	}
 
-	inline std::uint32_t ArchetypePool::GetSize() const noexcept
+	inline constexpr std::uint32_t
+	ArchetypePool::GetSize() const noexcept
 	{
 		return m_size;
 	}

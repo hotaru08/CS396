@@ -55,6 +55,8 @@ namespace FireflyEngine::entity
 	// ------------------------------------------------------------------------
 	struct GlobalEntity final
 	{
-
+		archetype::Archetype* m_archetype;				//<! Corresponding archetype of entity
+		sharedinfo::entity_index_t m_entIndexInPool;	//<! Entity index in archetype's pool
+		sharedinfo::entity_valid_t m_validation;		//<! Validation ID of entity
 	};
 }
