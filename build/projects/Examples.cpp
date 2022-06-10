@@ -27,6 +27,22 @@ struct Scale
 {
 	float m_sx;
 	float m_sy;
+	int* ptr;
+
+	Scale()
+		: m_sx { 1 },
+		  m_sy { 1 }, 
+		  ptr { new int }
+	{
+
+	}
+
+	~Scale()
+	{
+		m_sx = m_sy = 0;
+		delete ptr;
+		ptr = nullptr;
+	}
 };
 
 struct Rotation
@@ -51,7 +67,10 @@ void TestCases()
 		std::cout << FireflyEngine::component::info_v< Scale >.m_UID << std::endl;
 	}
 
-	/* Test 02 - Adding Entities, */
+	/* Test 02 - Testing Archetype Pool */
+	std::array< const FireflyEngine::component::Info* const, 1> arr{ &FireflyEngine::component::info_v< Scale > };
+	FireflyEngine::pool::ArchetypePool pool{ std::span< const FireflyEngine::component::Info* const >{ arr.data(), arr.size() } };
+	pool.Delete(pool.Append());
 }
 
 void RenderECS()
@@ -61,6 +80,11 @@ void RenderECS()
 
 int main(void)
 {
+	// Enable run-time memory check for debug builds.
+#if defined(_DEBUG)
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+
 #ifdef DEVELOPMENT_MODE
 	TestCases();
 #else

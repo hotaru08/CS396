@@ -77,16 +77,6 @@ project "CS396_ECS_v1"
 		"MultiProcessorCompile"
 	}
 
-	libdirs
-	{ 
-		
-	}
-
-	links
-	{
-
-	}
-
     -- Properties under "All" Configuration
 	filter "system:windows"
 		staticruntime "On"
@@ -99,8 +89,23 @@ project "CS396_ECS_v1"
 		symbols "On"
 		linkoptions{"/NODEFAULTLIB:libcmt.lib"}
 
+	libdirs
+	{
+		"%{prj.location}/../../dependencies/glut/x64/Debug"
+	}
+
+	links
+	{
+
+	}
+
     -- Properties under "Release" Configuration
 	filter "configurations:Release"
 		runtime "Release"
 		optimize "On"
+
+	libdirs
+	{ 
+		"%{prj.location}/../../dependencies/glut/x64/Release"
+	}
         
