@@ -37,7 +37,7 @@
 *.lib
 
 # Executables
-*.exe
+
 *.out
 *.app
 
@@ -46,9 +46,3 @@ dependencies
 bin
 bin-int
 .vs
-
-# Visual Studio files
-*.sln
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
