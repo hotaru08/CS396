@@ -21,14 +21,14 @@ namespace FireflyEngine::pool
 	struct ArchetypePool final
 	{
 		// Aliases of function type declarations
-		using component_infos_t = std::span < const component::Info* const >;
+		using component_infos_t = const component::Info* const;
 		using memory_array_t	= std::array< std::byte*, sharedinfo::max_num_components_per_entity_v >;
 
-	//private:
+	private:
 
-		std::uint32_t		m_size;       //<! Current size / number of entities in pool
-		memory_array_t		m_components; //<! Array of pointers that points to the different components of archetype
-		component_infos_t	m_compInfos;  //<! Container storing the components' info
+		memory_array_t					m_pComponents;	//<! Array of pointers that points to the components of archetype
+		std::span < component_infos_t > m_pCompInfos;	//<! Container storing the components' info
+		std::uint32_t					m_numEntities;	//<! Number of entities in pool
 
 
 		ArchetypePool(const ArchetypePool& _otherInst) noexcept			    = delete; // Unable to copy pool data to other pools
@@ -42,7 +42,7 @@ namespace FireflyEngine::pool
 
 		// Rules of 5 - construct, destruct, copy
 		ArchetypePool() noexcept;
-		ArchetypePool(component_infos_t _componentInfos) noexcept;
+		ArchetypePool(std::span < component_infos_t > _componentInfos) noexcept;
 		~ArchetypePool() noexcept;
 
 		// ------------------------------------------------------------------------
@@ -50,7 +50,7 @@ namespace FireflyEngine::pool
 		// ------------------------------------------------------------------------
 		
 		// Initializes pool with defined archetype utilizing this pool
-		void Initialize(component_infos_t _componentInfos) noexcept;
+		void Initialize(std::span < component_infos_t > _componentInfos) noexcept;
 
 		// Appends and initialize new components to components' pool, returning index of new entity
 		std::int32_t Append() noexcept;
@@ -70,11 +70,11 @@ namespace FireflyEngine::pool
 		// ------------------------------------------------------------------------
 		
 		// Finds for the index where the component to be found is located in this pool
-		constexpr std::int32_t FindComponentTypeInPool(
-			const sharedinfo::component_uid_t& _uid) const noexcept;
+		constexpr std::int32_t FindComponentType(const sharedinfo::component_uid_t& _uid) const noexcept;
 
 		// Retrieves the specified component at specified entity index
 		template < typename Component >
+			requires std::is_same_v< Component, std::decay_t< Component > >
 		Component& GetComponent(const sharedinfo::entity_index_t& _entityIndex) const noexcept;
 	};
 }

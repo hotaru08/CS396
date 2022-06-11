@@ -18,7 +18,7 @@ namespace FireflyEngine::component
 	inline void Manager::RegisterComponent() noexcept
 	{
 		// Reference to component's information
-		constexpr auto& uid = info_v< Component >.m_UID;
+		constexpr auto& uid = info_v< Component >.m_uid;
 		if (uid != FireflyEngine::sharedinfo::invalid_info_v)
 			return;
 

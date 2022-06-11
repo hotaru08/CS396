@@ -24,6 +24,7 @@ Description:
 #include <array>
 #include <span>
 #include <cassert>
+#include <concepts>
 
 
 // ----------------------------------------------------------------------------
