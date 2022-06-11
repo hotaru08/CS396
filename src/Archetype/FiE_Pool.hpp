@@ -8,10 +8,6 @@ Description:
 	Archetype's memory pool storing an array of pointers that points to the
 	respective components the archetype refers to.
 
-	Actions includes:
-		- Identifies components that might be in this pool
-		- Retrieving the component information for specified entity
-
 ******************************************************************************/
 namespace FireflyEngine::pool
 {
@@ -38,7 +34,7 @@ namespace FireflyEngine::pool
 	{
 	}
 
-	inline ArchetypePool::ArchetypePool(std::span < component_infos_t > _componentInfos) noexcept
+	inline ArchetypePool::ArchetypePool(std::span < component_info_t > _componentInfos) noexcept
 		: ArchetypePool { }
 	{
 		Initialize(_componentInfos);
@@ -55,7 +51,7 @@ namespace FireflyEngine::pool
 			VirtualFree(ptr, 0, MEM_RELEASE);
 	}
 	
-	inline void ArchetypePool::Initialize(std::span < component_infos_t > _componentInfos) noexcept
+	inline void ArchetypePool::Initialize(std::span < component_info_t > _componentInfos) noexcept
 	{
 		// Retrieve the infos of the components of this archetype
 		m_pCompInfos = _componentInfos;

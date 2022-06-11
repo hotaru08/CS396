@@ -6,10 +6,6 @@ Project:	CS396 Assignment 01
 Description:
 
 	Manager that handles the interaction with components.
-	This file contains the definition of declarations in .h file.
-
-	Actions includes:
-		- Registering of components
 
 ******************************************************************************/
 namespace FireflyEngine::component

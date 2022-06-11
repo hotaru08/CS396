@@ -6,8 +6,6 @@ Project:	CS396 Assignment 01
 Description:
 
 	Manager that handles the interaction with components.
-	Actions includes:
-		- Registering of components
 
 ******************************************************************************/
 #pragma once
@@ -19,7 +17,6 @@ namespace FireflyEngine::component
 	// ------------------------------------------------------------------------
 	class Manager final
 	{
-
 		inline static sharedinfo::component_uid_t m_numComponents;		  //<! How many unqiue components are registered
 
 

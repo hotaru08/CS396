@@ -6,8 +6,21 @@ Project:	CS396 Assignment 01
 Description:
 
 	Entry point of the application.
+
 ******************************************************************************/
 #include <FiE_ECS_includes.h>
+
+#define GLUT_STATIC_LIB
+#include "GL/glut.h"
+#include <random>
+
+static struct Game
+{
+	std::unique_ptr<FireflyEngine::ECS::Manager> m_ecsMgr = std::make_unique<FireflyEngine::ECS::Manager>();
+	std::int32_t m_width	= 1024;
+	std::int32_t m_height	= 800;
+
+} sg_gameInst;;
 
 struct Vector2D
 {
@@ -71,7 +84,7 @@ void TestCases()
 	/* Test 02 - Archetype Pool */
 	{
 		std::cout << "\033[1m\033[33m" << "\n----- START TEST 02 -----\n" << "\033[0m\033[37m" << std::endl;
-		using info_type = FireflyEngine::pool::ArchetypePool::component_infos_t;
+		using info_type = FireflyEngine::pool::ArchetypePool::component_info_t;
 		constexpr auto info_size_v = 3;
 
 		std::array< info_type, info_size_v> arr
@@ -118,12 +131,33 @@ void TestCases()
 	/* Test 06 - Overall Manager (ECS manager) */
 }
 
-void RenderECS()
+void Init()
 {
+	//
+	// Register all the elements of the game eg. components and systems
 
+
+	//
+	// Generate game entities
+	//std::srand(100);
+	//auto& SpaceShipArchetype = s_Game.m_GameMgr->getOrCreateArchetype< position, velocity, timer >();
+	//for (int i = 0; i < 1000; i++)
+	//{
+	//	SpaceShipArchetype.CreateEntity([&](position& Position, velocity& Velocity, timer& Timer)
+	//		{
+	//			Position.m_Value.m_X = std::rand() % s_Game.m_W;
+	//			Position.m_Value.m_Y = std::rand() % s_Game.m_H;
+
+	//			Velocity.m_Value.m_X = (std::rand() / (float)RAND_MAX) - 0.5f;
+	//			Velocity.m_Value.m_Y = (std::rand() / (float)RAND_MAX) - 0.5f;
+	//			Velocity.m_Value.Normalize();
+
+	//			Timer.m_Value = (std::rand() / (float)RAND_MAX) * 8;
+	//		});
+	//}
 }
 
-int main(void)
+int main(int argc, char** argv)
 {
 	// Enable run-time memory check for debug builds.
 #if defined(_DEBUG)
@@ -131,5 +165,29 @@ int main(void)
 #endif
 
 	TestCases();
-	RenderECS();
+
+	// Setup Window Instance, Graphics and GameLoop
+	glutInitWindowSize(sg_gameInst.m_width, sg_gameInst.m_height);
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DOUBLE);
+	glutCreateWindow("CS396 Assignment 01");
+	glutDisplayFunc([]
+		{
+			//sg_gameInst.m_ecsMgr->Run();
+		}
+	);
+	glutReshapeFunc([](int w, int h)
+		{
+			sg_gameInst.m_width = w;
+			sg_gameInst.m_height = h;
+			glViewport(0, 0, w, h);
+			glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+			glOrtho(0, w, 0, h, -1, 1);
+			glScalef(1, -1, 1);
+			glTranslatef(0, -h, 0);
+		}
+	);
+	//glutTimerFunc(0, timer, 0);
+	glutMainLoop();
 }

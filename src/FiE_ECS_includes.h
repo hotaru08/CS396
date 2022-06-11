@@ -5,7 +5,8 @@ Project:	CS396 Assignment 01
 
 Description:
 
-	Common includes utilized among the project.
+	Common includes utilized amongst the project.
+
 ******************************************************************************/
 #pragma once
 
@@ -49,3 +50,5 @@ Description:
 
 /* Entities */
 #include <Entity\FiE_Entity.h>
+
+#include <FiE_ECSManager.h>

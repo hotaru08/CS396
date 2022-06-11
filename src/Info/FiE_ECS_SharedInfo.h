@@ -7,6 +7,7 @@ Description:
 
 	Shared information that is used across different files working with the ECS
 	system.
+
 ******************************************************************************/
 #pragma once
 

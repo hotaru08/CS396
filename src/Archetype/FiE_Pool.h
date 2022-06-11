@@ -8,10 +8,6 @@ Description:
 	Archetype's memory pool storing an array of pointers that points to the
 	respective components the archetype refers to.
 
-	Actions includes:
-		- Identifies components that might be in this pool
-		- Retrieving the component information for specified entity
-
 ******************************************************************************/
 namespace FireflyEngine::pool
 {
@@ -20,16 +16,18 @@ namespace FireflyEngine::pool
 	// ------------------------------------------------------------------------
 	struct ArchetypePool final
 	{
-		// Aliases of function type declarations
-		using component_infos_t = const component::Info* const;
+		// Aliases of type declarations
+		using component_info_t	= const component::Info* const;
 		using memory_array_t	= std::array< std::byte*, sharedinfo::max_num_components_per_entity_v >;
 
-	private:
 
-		memory_array_t					m_pComponents;	//<! Array of pointers that points to the components of archetype
-		std::span < component_infos_t > m_pCompInfos;	//<! Container storing the components' info
-		std::uint32_t					m_numEntities;	//<! Number of entities in pool
+		// ------------------------------------------------------------------------
+		// Constructors / Destructor
+		// ------------------------------------------------------------------------
 
+		ArchetypePool() noexcept;
+		ArchetypePool(std::span < component_info_t > _componentInfos) noexcept;
+		~ArchetypePool() noexcept;
 
 		ArchetypePool(const ArchetypePool& _otherInst) noexcept			    = delete; // Unable to copy pool data to other pools
 		ArchetypePool& operator=(const ArchetypePool& _otherInst) noexcept  = delete;
@@ -38,19 +36,12 @@ namespace FireflyEngine::pool
 		ArchetypePool& operator=(const ArchetypePool&& _otherInst) noexcept = delete;
 
 
-	public:
-
-		// Rules of 5 - construct, destruct, copy
-		ArchetypePool() noexcept;
-		ArchetypePool(std::span < component_infos_t > _componentInfos) noexcept;
-		~ArchetypePool() noexcept;
-
 		// ------------------------------------------------------------------------
 		// Pool Functions
 		// ------------------------------------------------------------------------
 		
 		// Initializes pool with defined archetype utilizing this pool
-		void Initialize(std::span < component_infos_t > _componentInfos) noexcept;
+		void Initialize(std::span < component_info_t > _componentInfos) noexcept;
 
 		// Appends and initialize new components to components' pool, returning index of new entity
 		std::int32_t Append() noexcept;
@@ -76,7 +67,15 @@ namespace FireflyEngine::pool
 		template < typename Component >
 			requires std::is_same_v< Component, std::decay_t< Component > >
 		Component& GetComponent(const sharedinfo::entity_index_t& _entityIndex) const noexcept;
+
+
+	private:
+
+		memory_array_t					m_pComponents;	//<! Array of pointers that points to the components of archetype
+		std::span < component_info_t > m_pCompInfos;	//<! Container storing pointers to components' info
+		std::uint32_t					m_numEntities;	//<! Number of entities in pool
 	};
 }
 
 #include <Archetype\FiE_Pool.hpp>
+

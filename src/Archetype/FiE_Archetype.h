@@ -11,8 +11,36 @@ Description:
 ******************************************************************************/
 namespace FireflyEngine::archetype
 {
-	class Archetype
+	// ------------------------------------------------------------------------
+	// Archetype Information
+	// ------------------------------------------------------------------------
+	struct Archetype final
 	{
+		// Aliases of type declarations
+		using component_info_t = const component::Info* const;
+		using info_array_t		= std::array< std::byte*, sharedinfo::max_num_components_per_entity_v >;
+
+
+		// ------------------------------------------------------------------------
+		// Constructors / Destructor
+		// ------------------------------------------------------------------------
+
+
+		Archetype() noexcept;
+		Archetype(std::span < component_info_t > _componentInfos) noexcept;
+		~Archetype() noexcept;
+
+		Archetype(const Archetype& _otherInst) noexcept				= delete; // Unable to copy archetype's data
+		Archetype& operator=(const Archetype& _otherInst) noexcept	= delete;
+
+		Archetype(const Archetype&& _otherInst) noexcept			= delete; // Unable to move archetype's data
+		Archetype& operator=(const Archetype&& _otherInst) noexcept = delete;
+
+
+	private:
+
+		info_array_t		m_pCompInfos;	//<! Container storing pointers to components' info
+		pool::ArchetypePool m_pool;			//<! Pool that manages the components and entities of archetype
 
 	};
 }
