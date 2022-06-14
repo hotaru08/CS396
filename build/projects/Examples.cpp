@@ -14,23 +14,30 @@ Description:
 #include "GL/glut.h"
 #include <random>
 
-static struct Game
+static struct Window
 {
-	std::unique_ptr<FireflyEngine::ECS::Manager> m_ecsMgr = std::make_unique<FireflyEngine::ECS::Manager>();
-	std::int32_t m_width	= 1024;
-	std::int32_t m_height	= 800;
+	std::unique_ptr<FireflyEngine::ECS::Manager> m_ecsManager = 
+		std::make_unique<FireflyEngine::ECS::Manager>();
 
-} sg_gameInst;;
+	std::uint32_t m_width	= 1024;
+	std::uint32_t m_height	= 800;
+	std::uint32_t m_posX	= 0;
+	std::uint32_t m_posY	= 0;
+
+} sg_gameWindow;
 
 struct Vector2D
 {
 	float x, y;
+
+	Vector2D(const float _x = 0.f, const float _y = 0.f)
+		: x{ _x }, y{ _y }
+	{ }
 };
 
 struct Position
 {
-	float m_px = 5.f;
-	float m_py = 5.f;
+	Vector2D pos{ 5.f, 5.f };
 };
 
 struct Scale
@@ -46,6 +53,29 @@ struct Scale
 	{
 		std::cout << "Called Scale ctor" << std::endl;
 	}
+
+	Scale& operator=(const Scale&& _rhs)
+	{
+		m_sx = _rhs.m_sx;
+		m_sy = _rhs.m_sy;
+
+		delete ptr;
+		ptr = _rhs.ptr;
+
+		std::cout << "Called Scale move" << std::endl;
+		return *this;
+	}
+
+	//Scale& operator=(const Scale& _rhs)
+	//{
+	//	m_sx = _rhs.m_sx;
+	//	m_sy = _rhs.m_sy;
+
+	//	delete ptr;
+	//	ptr = _rhs.ptr;
+
+	//	return *this;
+	//}
 
 	~Scale()
 	{
@@ -100,6 +130,8 @@ void TestCases()
 		};
 
 		const auto index = poolInst.Append();
+		const auto index2 = poolInst.Append();
+		const auto index3 = poolInst.Append();
 
 		std::cout << "Finding Scale Component in pool ... " << std::endl;
 		const std::int32_t findCompIndex = poolInst.FindComponentType(arr[1]->m_uid);
@@ -113,7 +145,7 @@ void TestCases()
 
 		std::cout 
 			<< "Rotation uid: "
-			<< FireflyEngine::component::info_v < std::decay_t<decltype(comp)> >.m_uid
+			<< FireflyEngine::component::info_v < decltype(comp) >.m_uid
 			<< std::endl; // shld be 1 (order of registration)
 
 		std::cout << "Rotation along z-axis: " << comp.m_rz << std::endl;
@@ -123,6 +155,10 @@ void TestCases()
 	}
 
 	/* Test 03 - Archetype, Signatures, Pool */
+	{
+		FireflyEngine::tools::Bits bits;
+		bits.SetBitsFromComponents < Position >();
+	}
 
 	/* Test 04 - Registering Systems */
 
@@ -139,7 +175,7 @@ void Init()
 
 	//
 	// Generate game entities
-	//std::srand(100);
+	std::srand(100);
 	//auto& SpaceShipArchetype = s_Game.m_GameMgr->getOrCreateArchetype< position, velocity, timer >();
 	//for (int i = 0; i < 1000; i++)
 	//{
@@ -167,27 +203,40 @@ int main(int argc, char** argv)
 	TestCases();
 
 	// Setup Window Instance, Graphics and GameLoop
-	glutInitWindowSize(sg_gameInst.m_width, sg_gameInst.m_height);
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE);
-	glutCreateWindow("CS396 Assignment 01");
-	glutDisplayFunc([]
-		{
-			//sg_gameInst.m_ecsMgr->Run();
-		}
-	);
-	glutReshapeFunc([](int w, int h)
-		{
-			sg_gameInst.m_width = w;
-			sg_gameInst.m_height = h;
-			glViewport(0, 0, w, h);
-			glMatrixMode(GL_PROJECTION);
-			glLoadIdentity();
-			glOrtho(0, w, 0, h, -1, 1);
-			glScalef(1, -1, 1);
-			glTranslatef(0, -h, 0);
-		}
-	);
-	//glutTimerFunc(0, timer, 0);
-	glutMainLoop();
+	//{
+	//	glutInitWindowSize(sg_gameWindow.m_width, sg_gameWindow.m_height);
+	//	glutInitWindowPosition(sg_gameWindow.m_posX, sg_gameWindow.m_posY);
+	//	//glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
+	//
+	//	glutInit(&argc, argv);
+	//	glutCreateWindow("CS396 Assignment 01");
+
+	//	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
+	//	glutReshapeFunc
+	//	(
+	//		[](int w, int h)
+	//		{
+	//			sg_gameWindow.m_width	= w;
+	//			sg_gameWindow.m_height	= h;
+	//			glViewport(0, 0, w, h);
+	//			glMatrixMode(GL_PROJECTION);
+	//			glLoadIdentity();
+	//			glOrtho(0, w, 0, h, -1, 1);
+	//			glScalef(1, -1, 1);
+	//			glTranslatef(0, -h, 0);
+	//		}
+	//	);
+	//	glutDisplayFunc
+	//	(
+	//		[]()
+	//		{
+	//			sg_gameWindow.m_ecsManager->Update();
+	//		}
+	//	);
+
+	//	//glutLeaveMainLoop();
+	//}
+	//glutMainLoop();
+
+	std::cout << "Exiting application ..." << std::endl;
 }

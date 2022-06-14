@@ -77,5 +77,5 @@ namespace FireflyEngine::component
 
 	// Reference to component's information
 	template < typename T >
-	constexpr auto& info_v = create_info_v< T >;
+	constexpr auto& info_v = create_info_v< std::decay_t< T > >;
 }

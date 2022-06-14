@@ -25,12 +25,13 @@ namespace FireflyEngine::sharedinfo
 
 	using system_uid_t		= std::uint32_t;				 //<! Based on max number of systems
 
+	using empty_lambda_t	= decltype([](){});				 //<! Type definition of an empty lambda
 
 	// ------------------------------------------------------------------------
 	// Expressions
 
-	// Memory management
-	constexpr auto virtual_page_size_v				= 4096;	 //<! 4k bytes (4Mb) as per specificed
+	// Archetype
+	constexpr auto virtual_pool_page_size_v			= 4096;	 //<! 4k bytes (4Mb) as per specificed
 															 
 	// Component
 	constexpr auto invalid_info_v = std::numeric_limits< sharedinfo::component_uid_t >::max(); //<! UID used to define a invalid id
@@ -41,6 +42,4 @@ namespace FireflyEngine::sharedinfo
 	// Entity												 
 	constexpr auto max_num_entity_per_pool_v		= 1000;	 //<! Max number of entities in each memory pool
 	constexpr auto max_num_entity_total_v			= 10000; //<! Max number of entities that can be generated at a time
-
-
 }

@@ -23,6 +23,7 @@ Description:
 #include <memory>
 #include <utility>
 #include <array>
+#include <vector>
 #include <span>
 #include <cassert>
 #include <concepts>
@@ -34,21 +35,23 @@ Description:
 
 /* Shared Info */
 #include <Info\FiE_ECS_SharedInfo.h>
+#include <Info\FiE_ECS_Bits.h>
+
+/* Entities */
+#include <Entity\FiE_Entity.h>
 
 /* Components */
 #include <Component\FiE_Component.h>
 #include <Component\FiE_ComponentManager.h>
 
-/* Memory */
-#include <Archetype\FiE_Pool.h>
-
 /* Archetype */
+#include <Archetype\FiE_Pool.h>
 #include <Archetype\FiE_Archetype.h>
 
 /* Systems */
+
 #include <System\FiE_SystemManager.h>
 
-/* Entities */
-#include <Entity\FiE_Entity.h>
+
 
 #include <FiE_ECSManager.h>

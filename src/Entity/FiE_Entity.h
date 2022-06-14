@@ -53,10 +53,11 @@ namespace FireflyEngine::entity
 	// ------------------------------------------------------------------------
 	// Global Entity Information ( wrapper to refer to internal Entity Data) 
 	// ------------------------------------------------------------------------
-	struct GlobalEntity final
-	{
-		archetype::Archetype*		m_pArchetype;		//<! Pointer to corresponding archetype of entity
-		sharedinfo::entity_index_t	m_entIndexInPool;	//<! Entity index in archetype's pool
-		sharedinfo::entity_valid_t	m_validation;		//<! Validation ID of entity
-	};
+	//struct Archetype;
+	//struct GlobalEntity final
+	//{
+	//	archetype::Archetype*		m_pArchetype;		//<! Pointer to corresponding archetype of entity
+	//	sharedinfo::entity_index_t	m_entIndexInPool;	//<! Entity index in archetype's pool
+	//	sharedinfo::entity_valid_t	m_validation;		//<! Validation ID of entity
+	//};
 }

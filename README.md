@@ -23,4 +23,4 @@ There is an "Example.cpp" file under the project folder. There are example cases
 the ECS in that file.
 
 ## Dependencies
-- [GLUT](https://github.com/markkilgard/glut) (window initialization, graphics etc)
+- [freeglut](https://github.com/FreeGLUTProject/freeglut.git)

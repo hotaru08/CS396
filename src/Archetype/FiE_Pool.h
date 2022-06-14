@@ -26,7 +26,7 @@ namespace FireflyEngine::pool
 		// ------------------------------------------------------------------------
 
 		ArchetypePool() noexcept;
-		ArchetypePool(std::span < component_info_t > _componentInfos) noexcept;
+		ArchetypePool(const std::span < component_info_t >& _componentInfos) noexcept;
 		~ArchetypePool() noexcept;
 
 		ArchetypePool(const ArchetypePool& _otherInst) noexcept			    = delete; // Unable to copy pool data to other pools
@@ -44,7 +44,7 @@ namespace FireflyEngine::pool
 		void Initialize(std::span < component_info_t > _componentInfos) noexcept;
 
 		// Appends and initialize new components to components' pool, returning index of new entity
-		std::int32_t Append() noexcept;
+		sharedinfo::entity_index_t Append() noexcept;
 
 		// Deletes and removes components from components' pool
 		void Delete(const sharedinfo::entity_index_t _entityIndex) noexcept;
@@ -72,10 +72,9 @@ namespace FireflyEngine::pool
 	private:
 
 		memory_array_t					m_pComponents;	//<! Array of pointers that points to the components of archetype
-		std::span < component_info_t > m_pCompInfos;	//<! Container storing pointers to components' info
+		std::span < component_info_t >  m_pCompInfos;	//<! Container storing pointers to components' info
 		std::uint32_t					m_numEntities;	//<! Number of entities in pool
 	};
 }
 
 #include <Archetype\FiE_Pool.hpp>
-
