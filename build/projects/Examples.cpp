@@ -33,6 +33,11 @@ struct Vector2D
 	Vector2D(const float _x = 0.f, const float _y = 0.f)
 		: x{ _x }, y{ _y }
 	{ }
+
+	void operator()()
+	{
+		
+	}
 };
 
 struct Position
@@ -54,7 +59,7 @@ struct Scale
 		std::cout << "Called Scale ctor" << std::endl;
 	}
 
-	Scale& operator=(const Scale&& _rhs)
+	Scale& operator=(const Scale&& _rhs) noexcept
 	{
 		m_sx = _rhs.m_sx;
 		m_sy = _rhs.m_sy;
@@ -92,6 +97,11 @@ struct Rotation
 	float m_rz = 45.f;
 };
 
+void Foo()
+{
+	std::cout << "called in function" << std::endl;
+}
+
 void TestCases()
 {
 	/* Test 01 - Registering components */
@@ -114,7 +124,7 @@ void TestCases()
 	/* Test 02 - Archetype Pool */
 	{
 		std::cout << "\033[1m\033[33m" << "\n----- START TEST 02 -----\n" << "\033[0m\033[37m" << std::endl;
-		using info_type = FireflyEngine::pool::ArchetypePool::component_info_t;
+		using info_type = FireflyEngine::archetype::Pool::component_info_t;
 		constexpr auto info_size_v = 3;
 
 		std::array< info_type, info_size_v> arr
@@ -124,7 +134,7 @@ void TestCases()
 			&FireflyEngine::component::info_v< Position >
 		};
 
-		FireflyEngine::pool::ArchetypePool poolInst 
+		FireflyEngine::archetype::Pool poolInst 
 		{ 
 			std::span< info_type >{ arr.data(), arr.size() }
 		};
@@ -133,7 +143,7 @@ void TestCases()
 		const auto index2 = poolInst.Append();
 		const auto index3 = poolInst.Append();
 
-		std::cout << "Finding Scale Component in pool ... " << std::endl;
+		std::cout << "Finding Scale Component in Pool ... " << std::endl;
 		const std::int32_t findCompIndex = poolInst.FindComponentType(arr[1]->m_uid);
 		
 		findCompIndex > 0 ?
@@ -154,10 +164,68 @@ void TestCases()
 		std::cout << "\033[1m\033[33m" << "\n----- END TEST -----\n" << "\033[0m\033[37m" << std::endl;
 	}
 
+	/* Test 02.5 - Function traits */
+	{
+		std::cout << "\033[1m\033[33m" << "\n----- START TEST 02.5 -----\n" << "\033[0m\033[37m" << std::endl;
+		std::cout << typeid(FireflyEngine::tools::traits::fn_traits< int() >::return_type_t).name() << std::endl;
+		std::cout << typeid(FireflyEngine::tools::traits::fn_traits< void(*)() >::return_type_t).name() << std::endl;
+		std::cout << typeid(FireflyEngine::tools::traits::fn_traits< void*(*)() >::return_type_t).name() << std::endl;
+		std::cout << typeid(FireflyEngine::tools::traits::fn_traits< int*(*)() >::return_type_t).name() << std::endl;
+		std::cout << typeid(FireflyEngine::tools::traits::fn_traits< int&(*)() >::return_type_t).name() << std::endl;
+		
+		auto* l = +[]()
+		{
+			return []()
+			{
+				return true;
+			};
+		};
+		std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(l) > ::return_type_t).name() << std::endl;
+		
+		Vector2D vec2;
+		std::cout << typeid(decltype(&Vector2D::operator())).name() << std::endl;
+		std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(&Vector2D::operator()) > ::return_type_t).name() << std::endl;
+
+		std::cout << "------" << std::endl;
+		std::cout << typeid(decltype(vec2())).name() << std::endl;
+		//std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(&vec2.operator()) >::return_type_t).name << std::endl;
+
+		//auto* address = l;
+		//std::cout << decltype(address) << std::endl;
+		//std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(address) > ::return_type_t).name() << std::endl;
+		
+		
+		
+		
+		std::cout << "\033[1m\033[33m" << "\n----- END TEST -----\n" << "\033[0m\033[37m" << std::endl;
+	}
+
 	/* Test 03 - Archetype, Signatures, Pool */
 	{
+		std::cout << "\033[1m\033[33m" << "\n----- START TEST 03 -----\n" << "\033[0m\033[37m" << std::endl;
 		FireflyEngine::tools::Bits bits;
 		bits.SetBitsFromComponents < Position >();
+		FireflyEngine::entity::Manager inst;
+
+		using info_type = FireflyEngine::archetype::Archetype::component_info_t;
+		constexpr auto info_size_v = 3;
+
+		std::array< info_type, info_size_v> arr
+		{
+			&FireflyEngine::component::info_v< Rotation >,
+			&FireflyEngine::component::info_v< Scale >,
+			&FireflyEngine::component::info_v< Position >
+		};
+
+		FireflyEngine::archetype::Archetype archetype
+		{
+			std::span< info_type >{ arr.data(), arr.size() },
+			bits,
+			inst
+		};
+		//archetype.CreateEntity([]() {});
+
+		std::cout << "\033[1m\033[33m" << "\n----- END TEST -----\n" << "\033[0m\033[37m" << std::endl;
 	}
 
 	/* Test 04 - Registering Systems */

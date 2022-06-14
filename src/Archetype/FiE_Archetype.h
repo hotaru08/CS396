@@ -9,6 +9,13 @@ Description:
 	functionality to interact with entities and their components.
 
 ******************************************************************************/
+#pragma once
+
+namespace FireflyEngine::entity
+{
+	class Manager;
+}
+
 namespace FireflyEngine::archetype
 {
 	// ------------------------------------------------------------------------
@@ -25,10 +32,10 @@ namespace FireflyEngine::archetype
 		// Constructors / Destructor
 		// ------------------------------------------------------------------------
 
-		//Archetype() noexcept;
 		Archetype(
 			const std::span < component_info_t >& _componentInfos,
-			const tools::Bits& _bits) noexcept;
+			const tools::Bits& _bits,
+			entity::Manager& _entityManager) noexcept;
 
 		Archetype(const Archetype& _otherInst) noexcept				= delete; // Unable to copy archetype's data
 		Archetype& operator=(const Archetype& _otherInst) noexcept	= delete;
@@ -42,9 +49,8 @@ namespace FireflyEngine::archetype
 		// ------------------------------------------------------------------------
 
 		// Creates a new entity of current archetype
-
-		//entity::Entity& CreateEntity() noexcept;
-
+		template < tools::traits::is_void_fn CallbackType = sharedinfo::empty_lambda_t>
+		entity::Entity& CreateEntity(CallbackType&& _callbackFunc) noexcept;
 
 		// Destroys an entity of current archetype
 		void DestroyEntity(entity::Entity& _entity) noexcept;
@@ -52,12 +58,13 @@ namespace FireflyEngine::archetype
 
 		// ------------------------------------------------------------------------
 		// Structural Changes Functions
-		// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------	 
 
+		// 
 		void UpdateStructuralChanges() noexcept;
 
-
-		//void AccessGuard() noexcept;
+		template < tools::traits::is_empty_fn CallbackType = sharedinfo::empty_lambda_t >
+		void AccessGuard() noexcept;
 
 	private:
 
@@ -65,9 +72,11 @@ namespace FireflyEngine::archetype
 		tools::Bits					  m_compSignature;	  //<! Bit signature of flagged components that archetype has
 		std::vector< entity::Entity > m_toDeleteEntities; //<! Stores the entities that are to be deleted (prevent structural changes)
 		
-		pool::ArchetypePool			  m_pool;			  //<! Pool that manages the components and entities of archetype
+		entity::Manager&			  m_entityManager;	  //<! Reference to manager that handles the entities
+		archetype::Pool		      m_pool;			  //<! Pool that manages the components and entities of archetype
 		std::uint32_t				  m_processesRunning; //<! Number of systems running, to ensure only update after all systems
 	};
+
 }
 
 #include <Archetype\FiE_Archetype.hpp>

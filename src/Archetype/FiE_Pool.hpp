@@ -5,11 +5,11 @@ Project:	CS396 Assignment 01
 
 Description:
 
-	Archetype's memory pool storing an array of pointers that points to the
+	Archetype's memory Pool storing an array of pointers that points to the
 	respective components the archetype refers to.
 
 ******************************************************************************/
-namespace FireflyEngine::pool
+namespace FireflyEngine::archetype
 {
 	// ------------------------------------------------------------------------
 	// Helper Functions
@@ -28,20 +28,20 @@ namespace FireflyEngine::pool
 	// Member Functions
 	// ------------------------------------------------------------------------
 
-	inline ArchetypePool::ArchetypePool() noexcept
+	inline Pool::Pool() noexcept
 		: m_numEntities { 0 },
 		  m_pComponents { }
 	{
 	}
 
-	inline ArchetypePool::ArchetypePool(
+	inline Pool::Pool(
 		const std::span < component_info_t >& _componentInfos) noexcept
-		: ArchetypePool { }
+		: Pool { }
 	{
 		Initialize(_componentInfos);
 	}
 
-	inline ArchetypePool::~ArchetypePool()
+	inline Pool::~Pool()
 	{
 		if (!m_pComponents.front())
 			return;
@@ -52,7 +52,7 @@ namespace FireflyEngine::pool
 			VirtualFree(ptr, 0, MEM_RELEASE);
 	}
 	
-	inline void ArchetypePool::Initialize(std::span < component_info_t > _componentInfos) noexcept
+	inline void Pool::Initialize(std::span < component_info_t > _componentInfos) noexcept
 	{
 		// Retrieve the infos of the components of this archetype
 		m_pCompInfos = _componentInfos;
@@ -75,7 +75,7 @@ namespace FireflyEngine::pool
 		}
 	}
 
-	inline sharedinfo::entity_index_t ArchetypePool::Append() noexcept
+	inline sharedinfo::entity_index_t Pool::Append() noexcept
 	{
 		assert(m_numEntities < sharedinfo::max_num_entity_per_pool_v);
 
@@ -108,7 +108,7 @@ namespace FireflyEngine::pool
 		return m_numEntities++;
 	}
 
-	inline void ArchetypePool::Delete(
+	inline void Pool::Delete(
 		const FireflyEngine::sharedinfo::entity_index_t _entityIndex) noexcept
 	{
 		assert(_entityIndex < m_numEntities);
@@ -126,7 +126,7 @@ namespace FireflyEngine::pool
 				// Get entity memory location to call dtor
 				const auto comp = m_pComponents[i];
 				if (info->m_pDestructor)
-					info->m_pDestructor(comp + _entityIndex * info->m_size);
+					info->m_pDestructor(comp + m_numEntities * info->m_size);
 
 				// Free page if removing entity does not use that page anymore
 				const auto lastEntryPage = GetPageOfEntity(info->m_size, m_numEntities + 1);
@@ -190,7 +190,7 @@ namespace FireflyEngine::pool
 		}
 	}
 
-	inline void ArchetypePool::Clear() noexcept
+	inline void Pool::Clear() noexcept
 	{
 		// Deallocate physical memory allocated to entities
 		while (m_numEntities)
@@ -198,13 +198,13 @@ namespace FireflyEngine::pool
 	}
 
 	inline constexpr std::uint32_t
-	ArchetypePool::GetSize() const noexcept
+	Pool::GetSize() const noexcept
 	{
 		return m_numEntities;
 	}
 
 	inline constexpr std::int32_t
-	ArchetypePool::FindComponentType(
+	Pool::FindComponentType(
 		const FireflyEngine::sharedinfo::component_uid_t& _uid) const noexcept
 	{
 		const auto size = m_pCompInfos.size();
@@ -221,7 +221,7 @@ namespace FireflyEngine::pool
 	template< typename Component >
 		requires std::is_same_v< Component, std::decay_t< Component > >
 	inline Component& 
-	ArchetypePool::GetComponent(
+	Pool::GetComponent(
 		const FireflyEngine::sharedinfo::entity_index_t& _entityIndex) const noexcept
 	{	
 		const auto& info = component::info_v< Component >;

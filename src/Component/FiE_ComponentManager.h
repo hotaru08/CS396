@@ -19,22 +19,20 @@ namespace FireflyEngine::component
 	{
 		inline static sharedinfo::component_uid_t m_numComponents;		  //<! How many unqiue components are registered
 
-
-		// Rule of 5 - constructor, copy, move
-		Manager(const Manager& _otherMgr) noexcept				= delete; // Unable to copy, only 1 manager
-		Manager& operator=(const Manager& _otherMgr) noexcept	= delete;
-
-		Manager(const Manager&& _otherMgr) noexcept				= delete; // Unable to move, only 1 manager
-		Manager& operator=(const Manager&& _otherMgr) noexcept	= delete;
-
-
 		// For internally registering component
 		template < typename Component >
 		void RegisterComponent() noexcept;
 
 	public:
 
+		// Rule of 5 - constructor, copy, move
 		Manager()												= default;
+		Manager(const Manager& _otherMgr) noexcept				= delete; // Unable to copy, only 1 manager
+		Manager& operator=(const Manager& _otherMgr) noexcept	= delete;
+
+		Manager(const Manager&& _otherMgr) noexcept				= delete; // Unable to move, only 1 manager
+		Manager& operator=(const Manager&& _otherMgr) noexcept	= delete;
+
 
 		// Exposed to register all possible components
 		template < typename... Components >

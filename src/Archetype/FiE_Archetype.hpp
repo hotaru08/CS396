@@ -13,10 +13,12 @@ namespace FireflyEngine::archetype
 {
 	Archetype::Archetype(
 		const std::span < component_info_t >& _componentInfos,
-		const tools::Bits& _bits) noexcept
+		const tools::Bits& _bits,
+		entity::Manager& _entityManager) noexcept
 		: m_pCompInfos			{ },
 		  m_compSignature		{ _bits },
-		  m_toDeleteEntities	{ }, 
+		  m_toDeleteEntities	{ },
+		  m_entityManager		{ _entityManager },
 		  m_pool				{ _componentInfos },
 		  m_processesRunning	{ 0 }
 	{
@@ -32,15 +34,30 @@ namespace FireflyEngine::archetype
 		assert(_entity.IsAlive());
 		m_toDeleteEntities.emplace_back(_entity);
 
-		// Set entity in global
+		// Set global entity to be not alive in the container that stores all global entities
+
 
 		// If all systems has finished updating, update changes to structure / entities
-		if (m_processesRunning)
+		if (!m_processesRunning)
 			UpdateStructuralChanges();
 	}
 
 	void Archetype::UpdateStructuralChanges() noexcept
 	{
 
+
+		// Delete entities that are to be deleted
+		const auto size = m_toDeleteEntities.size();
+		for (unsigned i = 0; i < size; ++i)
+		{
+
+		}
+	}
+
+	template < tools::traits::is_void_fn CallbackType>
+	inline entity::Entity& Archetype::CreateEntity(CallbackType&& _callbackFunc) noexcept
+	{
+		_callbackFunc();
+		return {};
 	}
 }

@@ -9,6 +9,8 @@ Description:
 	contains. Can be interpreted like a signature bitset.
 
 ******************************************************************************/
+#pragma once
+
 namespace FireflyEngine::tools
 {
 	// ------------------------------------------------------------------------
@@ -52,7 +54,7 @@ namespace FireflyEngine::tools
 		template < typename... Components >
 		void SetBitsFromComponents() noexcept
 		{
-			((setBit(component::info_v< Components >.m_uid)), ...);
+			(setBit(component::info_v< Components >.m_uid), ...);
 		}
 
 	private:

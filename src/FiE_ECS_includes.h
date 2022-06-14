@@ -36,6 +36,7 @@ Description:
 /* Shared Info */
 #include <Info\FiE_ECS_SharedInfo.h>
 #include <Info\FiE_ECS_Bits.h>
+#include <Info\FiE_FunctionTraits.h>
 
 /* Entities */
 #include <Entity\FiE_Entity.h>
@@ -50,8 +51,8 @@ Description:
 
 /* Systems */
 
+
+/* Managers */
+#include <Entity\FiE_EntityManager.h>
 #include <System\FiE_SystemManager.h>
-
-
-
 #include <FiE_ECSManager.h>
