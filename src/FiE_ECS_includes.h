@@ -27,6 +27,7 @@ Description:
 #include <span>
 #include <cassert>
 #include <concepts>
+#include <list>
 
 
 // ----------------------------------------------------------------------------
@@ -46,6 +47,7 @@ Description:
 #include <Component\FiE_ComponentManager.h>
 
 /* Archetype */
+#include <Archetype\FiE_Query.h>
 #include <Archetype\FiE_Pool.h>
 #include <Archetype\FiE_Archetype.h>
 

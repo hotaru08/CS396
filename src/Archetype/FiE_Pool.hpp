@@ -152,14 +152,6 @@ namespace FireflyEngine::archetype
 			if (info->m_pMoveFunc)
 				info->m_pMoveFunc(comp + info->m_size * m_numEntities, comp + info->m_size * _entityIndex);
 
-			//else if (info->m_pCopyFunc)
-			//{
-			//	info->m_pCopyFunc(comp + info->m_size * m_numEntities, comp + info->m_size * _entityIndex);
-
-			//	if (info->m_pDestructor)
-			//		info->m_pDestructor(comp + m_numEntities * info->m_size);
-			//}
-
 			else
 			{
 				if (info->m_pDestructor)

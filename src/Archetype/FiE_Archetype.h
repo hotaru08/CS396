@@ -49,7 +49,7 @@ namespace FireflyEngine::archetype
 		// ------------------------------------------------------------------------
 
 		// Creates a new entity of current archetype
-		template < tools::traits::is_void_fn CallbackType = sharedinfo::empty_lambda_t>
+		template < tools::traits::is_void_fn CallbackType >
 		entity::Entity& CreateEntity(CallbackType&& _callbackFunc) noexcept;
 
 		// Destroys an entity of current archetype
@@ -68,13 +68,14 @@ namespace FireflyEngine::archetype
 
 	private:
 
-		info_array_t				  m_pCompInfos;		  //<! Container storing pointers to components' info
-		tools::Bits					  m_compSignature;	  //<! Bit signature of flagged components that archetype has
-		std::vector< entity::Entity > m_toDeleteEntities; //<! Stores the entities that are to be deleted (prevent structural changes)
-		
-		entity::Manager&			  m_entityManager;	  //<! Reference to manager that handles the entities
-		archetype::Pool				  m_pool;			  //<! Pool that manages the components and entities of archetype
-		std::uint32_t				  m_processesRunning; //<! Number of systems running, to ensure only update after all systems
+		info_array_t				     m_pCompInfos;		  //<! Container storing pointers to components' info
+		tools::Bits					     m_compSignature;	  //<! Bit signature of flagged components that archetype has
+		std::vector<entity::Entity>      m_toDeleteEntities;  //<! Stores the entities that are to be deleted (prevent structural changes)
+									     
+		entity::Manager&			     m_entityManager;	  //<! Reference to manager that handles the entities
+		archetype::Pool					 m_currPool;		  //<! Pool that manages the components of archetype
+		//std::list<archetype::Pool>	 m_poolList;	
+		std::uint32_t				     m_processesRunning;  //<! Number of systems running, to ensure only update after all systems
 	};
 
 }

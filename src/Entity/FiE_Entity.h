@@ -43,13 +43,13 @@ namespace FireflyEngine::entity
 		};
 
 		// Compare between entities
-		bool operator==(const Entity& _otherEnt) const noexcept
+		constexpr bool operator==(const Entity& _otherEnt) const noexcept
 		{
 			return m_entityID == _otherEnt.m_entityID;
 		}
 
 		// Check if entity is alive
-		bool IsAlive() const noexcept
+		constexpr bool IsAlive() const noexcept
 		{
 			return m_validation.m_isAlive;
 		}

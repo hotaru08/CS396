@@ -24,7 +24,7 @@ namespace FireflyEngine::tools
 	public:
 
 		// Set bit at the specified index
-		void setBit(const std::uint32_t _bitIndex) noexcept
+		constexpr void setBit(const std::uint32_t _bitIndex) noexcept
 		{
 			m_bits[_bitIndex / num_bits_per_bit_chunk_v] |= 
 				1ULL << (_bitIndex % num_bits_per_bit_chunk_v);
@@ -52,7 +52,7 @@ namespace FireflyEngine::tools
 
 		// Set bits according to the components that is defined in archetype
 		template < typename... Components >
-		void SetBitsFromComponents() noexcept
+		constexpr void SetBitsFromComponents() noexcept
 		{
 			(setBit(component::info_v< Components >.m_uid), ...);
 		}

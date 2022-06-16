@@ -23,12 +23,12 @@ namespace FireflyEngine::tools
 			//<! Base class containing information of callback / function
 			//   Default = void(void::*)(void)
 			template
-				<
+			<
 				typename ReturnType = void,
-				typename ClassType = void,
+				typename ClassType  = void,
 				typename... Args
-				>
-				struct fn_traits_info
+			>
+			struct fn_traits_info
 			{
 				using return_type_t = ReturnType;
 				using class_type_t = ClassType;
@@ -79,32 +79,36 @@ namespace FireflyEngine::tools
 
 		template < has_functor Callback >
 		struct fn_traits < Callback >
-			: fn_traits < decltype(&std::remove_pointer_t< Callback >::operator()) >
+			: fn_traits < decltype(&std::remove_pointer_t< std::decay_t< Callback > >::operator()) >
 		{
 		};
-
-		template < typename Callback >
 
 		// --------------------------------------------------------------------------
 		// Function traits concepts
 		// --------------------------------------------------------------------------
 
+		//<! Defines the constraints for checking if Type is a function
+		template < typename CallbackType >
+		concept is_function = fn_traits< CallbackType >;
+
 		//<! Defines the constraints for a void function ( void(Args ...) )
 		template < typename CallbackType >
 		concept is_void_fn = requires
 		{
-			{ std::is_same_v < fn_traits<CallbackType>::return_type_t, void > };
+			{ std::is_same_v < fn_traits< CallbackType >::return_type_t, void > };
 		};
 
 		//<! Defines the constraints for an empty function ( void(void) )
 		template < typename CallbackType >
-		concept is_empty_fn =
-			std::is_invocable_v < CallbackType > &&
-			std::is_same_v < std::invoke_result_t < CallbackType >, void >;
+		concept is_empty_fn = requires
+		{
+			{ std::is_same_v < fn_traits< CallbackType >::return_type_t, void > };
+			{ fn_traits< CallbackType >::args_count_v == 0 };
+		};
 
 
 		// --------------------------------------------------------------------------
-		// Expressions
+		// Tuple Expressions
 		// --------------------------------------------------------------------------
 		namespace details
 		{
@@ -143,6 +147,9 @@ namespace FireflyEngine::tools
 		constexpr auto tuple_to_index_v = tuple_to_index < SearchType, Tuple >::value;
 
 		template < typename Tuple >
-		constexpr auto null_tuple_v = static_cast< Tuple >(nullptr);
+		constexpr auto null_tuple_v = static_cast< Tuple* >(nullptr);
+
+		template < typename... TupleArgs >
+		constexpr auto make_null_tuple_from_args_v = static_cast< std::tuple< TupleArgs... > >(nullptr);
 	}
 }

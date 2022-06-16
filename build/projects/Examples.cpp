@@ -91,7 +91,7 @@ void Foo()
 }
 
 /* Test 01 - Registering components */
-void TestCases1()
+void TestCase1()
 {
 	std::cout << "\033[1m\033[33m" << "\n----- START TEST 01 -----\n" << "\033[0m\033[37m" << std::endl;
 	std::unique_ptr<FireflyEngine::component::Manager> compMgr =
@@ -132,7 +132,7 @@ void TestCase2()
 	const auto index3 = poolInst.Append();
 
 	std::cout << "Finding Scale Component in Pool ... " << std::endl;
-	const std::int32_t findCompIndex = poolInst.FindComponentType(arr[1]->m_uid);
+	const std::int32_t findCompIndex = poolInst.FindComponentTypeIndex(arr[1]->m_uid);
 
 	findCompIndex > 0 ?
 		std::cout << "Found at " << findCompIndex << std::endl :
@@ -157,7 +157,7 @@ void TestCase2n5()
 {
 	std::cout << "\033[1m\033[33m" << "\n----- START TEST 02.5 -----\n" << "\033[0m\033[37m" << std::endl;
 
-	std::cout << "\033[1m\034[33m" << "\n----- Function Traits -----\n" << "\033[0m\033[37m" << std::endl;
+	std::cout << "\033[1m\033[34m" << "\n----- Function Traits -----\n" << "\033[0m\033[37m" << std::endl;
 
 	std::cout << typeid(FireflyEngine::tools::traits::fn_traits< int() >::return_type_t).name() << std::endl;
 	std::cout << typeid(FireflyEngine::tools::traits::fn_traits< void(*)() >::return_type_t).name() << std::endl;
@@ -165,20 +165,24 @@ void TestCase2n5()
 	std::cout << typeid(FireflyEngine::tools::traits::fn_traits< int* (*)() >::return_type_t).name() << std::endl;
 	std::cout << typeid(FireflyEngine::tools::traits::fn_traits< int& (*)() >::return_type_t).name() << std::endl;
 
+	std::cout << "lambda" << std::endl;
 	auto l = []()
 	{
-		return []()
-		{
-			return true;
-		};
+		//return []()
+		//{
+		//	return true;
+		//};
 	};
 	std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(l) > ::return_type_t).name() << std::endl;
 
 	Vector2D vec2;
 	Vector2D* pVec2;
+	Vector2D& vec2v2{ vec2 };
 	std::cout << typeid(Vector2D).name() << std::endl;
 	std::cout << typeid(decltype(&Vector2D::operator())).name() << std::endl;
 	std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(&Vector2D::operator()) > ::return_type_t).name() << std::endl;
+	std::cout << typeid(FireflyEngine::tools::traits::fn_traits < Vector2D > ::return_type_t).name() << std::endl;
+	std::cout << typeid(FireflyEngine::tools::traits::fn_traits < Vector2D& > ::return_type_t).name() << std::endl;
 
 	std::cout << "------" << std::endl;
 	std::cout << typeid(decltype(vec2)).name() << std::endl;
@@ -186,7 +190,9 @@ void TestCase2n5()
 	std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(vec2) >::return_type_t).name() << std::endl;
 	std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(pVec2) >::return_type_t).name() << std::endl;
 
-	std::cout << "\033[1m\034[33m" << "\n----- Tuple Traits -----\n" << "\033[0m\033[37m" << std::endl;
+	
+
+	std::cout << "\033[1m\033[34m" << "\n----- Tuple Traits -----\n" << "\033[0m\033[37m" << std::endl;
 
 
 	std::cout << "\033[1m\033[33m" << "\n----- END TEST -----\n" << "\033[0m\033[37m" << std::endl;
@@ -216,7 +222,7 @@ void TestCase3()
 		bits,
 		inst
 	};
-	//archetype.CreateEntity([]() {});
+	archetype.CreateEntity();
 
 	std::cout << "\033[1m\033[33m" << "\n----- END TEST -----\n" << "\033[0m\033[37m" << std::endl;
 }

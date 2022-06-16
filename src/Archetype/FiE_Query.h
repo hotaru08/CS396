@@ -31,5 +31,25 @@ namespace FireflyEngine::query
 	// --------------------------------------------------------------------------
 	// Query Functions
 	// --------------------------------------------------------------------------
-	constexpr bool operator==(const tools::)
+	struct instance final
+	{
+		// Compare between queries ( checking the archetype bits )
+		constexpr bool operator==(const tools::Bits& _otherBits) const noexcept
+		{
+			return true;
+		};
+
+		// 
+		template < tools::traits::has_functor Function >
+		constexpr void AddToQueryFromFunction(Function&& _function) noexcept
+		{
+
+		}
+
+		template < typename... Queries >
+		constexpr void AddToQueryFromTuple(const std::tuple< Queries ... >& _tuple) noexcept
+		{
+
+		}
+	};
 }

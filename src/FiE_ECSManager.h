@@ -9,6 +9,9 @@ namespace FireflyEngine::ECS
 
 	public:
 
+		entity::Manager		m_entityManager;
+		component::Manager	m_componentManager;
+
 		void Update()
 		{
 
