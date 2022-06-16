@@ -10,8 +10,7 @@ Description:
 ******************************************************************************/
 #include <FiE_ECS_includes.h>
 
-#define GLUT_STATIC_LIB
-#include "GL/glut.h"
+#include "GL/freeglut.h"
 #include <random>
 
 static struct Window
@@ -271,40 +270,39 @@ int main(int argc, char** argv)
 	TestCases();
 
 	// Setup Window Instance, Graphics and GameLoop
-	//{
-	//	glutInitWindowSize(sg_gameWindow.m_width, sg_gameWindow.m_height);
-	//	glutInitWindowPosition(sg_gameWindow.m_posX, sg_gameWindow.m_posY);
-	//	//glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
-	//
-	//	glutInit(&argc, argv);
-	//	glutCreateWindow("CS396 Assignment 01");
+	{
+		glutInitWindowSize(sg_gameWindow.m_width, sg_gameWindow.m_height);
+		glutInitWindowPosition(sg_gameWindow.m_posX, sg_gameWindow.m_posY);
+	
+		glutInit(&argc, argv);
+		glutCreateWindow("CS396 Assignment 01");
+		glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 
-	//	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-	//	glutReshapeFunc
-	//	(
-	//		[](int w, int h)
-	//		{
-	//			sg_gameWindow.m_width	= w;
-	//			sg_gameWindow.m_height	= h;
-	//			glViewport(0, 0, w, h);
-	//			glMatrixMode(GL_PROJECTION);
-	//			glLoadIdentity();
-	//			glOrtho(0, w, 0, h, -1, 1);
-	//			glScalef(1, -1, 1);
-	//			glTranslatef(0, -h, 0);
-	//		}
-	//	);
-	//	glutDisplayFunc
-	//	(
-	//		[]()
-	//		{
-	//			sg_gameWindow.m_ecsManager->Update();
-	//		}
-	//	);
+		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
+		glutReshapeFunc
+		(
+			[](int w, int h)
+			{
+				sg_gameWindow.m_width	= w;
+				sg_gameWindow.m_height	= h;
+				glViewport(0, 0, w, h);
+				glMatrixMode(GL_PROJECTION);
+				glLoadIdentity();
+				glOrtho(0, w, 0, h, -1, 1);
+				glScalef(1, -1, 1);
+				glTranslatef(0, -h, 0);
+			}
+		);
+		glutDisplayFunc
+		(
+			[]()
+			{
+				sg_gameWindow.m_ecsManager->Update();
+			}
+		);
 
-	//	//glutLeaveMainLoop();
-	//}
-	//glutMainLoop();
+		glutMainLoop();
+	}
 
 	std::cout << "Exiting application ..." << std::endl;
 }

@@ -1,72 +1,27 @@
 @echo off
 setlocal enabledelayedexpansion
 
-
-
 :DOWNLOAD_DEPENDENCIES
 powershell write-host -fore White ------------------------------------------------------------------------------------------------------
 powershell write-host -fore White DOWNLOADING DEPENDENCIES
 powershell write-host -fore White ------------------------------------------------------------------------------------------------------
 
-rmdir "../dependencies/glut" /S /Q
-git clone https://github.com/markkilgard/glut.git "../dependencies/glut"
+rmdir "../dependencies/freeglut" /S /Q
+git clone https://github.com/FreeGLUTProject/freeglut.git "../dependencies/freeglut"
 if %ERRORLEVEL% GEQ 1 goto :PAUSE
 
-:FIND_VSTUDIO
-powershell write-host -fore White ------------------------------------------------------------------------------------------------------
-powershell write-host -fore White FINDING VISUAL STUDIO / MSBuild
-powershell write-host -fore White ------------------------------------------------------------------------------------------------------
-
-
-for /f "usebackq tokens=*" %%i in (`vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe`) do (
-	SET MSBUILD=%%i
-    GOTO :BREAK_OUT
-)
-
-:BREAK_OUT
-for /f "usebackq tokens=1* delims=: " %%i in (`.\vswhere -latest -requires Microsoft.VisualStudio.Workload.NativeDesktop`) do (
-    if /i "%%i"=="installationPath" set VSPATH=%%j
-)
-
-IF EXIST "%MSBUILD%" ( 
-    echo OK 
-    GOTO :COMPILATION
-    )
-echo Failed to find MSBuild!!! 
-GOTO :ERROR
-
-:COMPILATION
-powershell write-host -fore White ------------------------------------------------------------------------------------------------------
-powershell write-host -fore White COMPILING DEPENDENCIES
-powershell write-host -fore White ------------------------------------------------------------------------------------------------------
-
-
-powershell write-host -fore Cyan glut: Updating...
-"%VSPATH%\Common7\IDE\devenv.exe" "%CD%\..\dependencies\glut\glut_2012.vcxproj" /upgrade
-if %ERRORLEVEL% GEQ 1 goto :ERROR
-
-echo.
-powershell write-host -fore Cyan glut Release: Compiling...
-"%MSBUILD%" "%CD%\..\dependencies\glut\glut_2012.vcxproj" /p:configuration=Release /p:Platform="x64" /verbosity:minimal 
-if %ERRORLEVEL% GEQ 1 goto :ERROR
-
-echo.
-powershell write-host -fore Cyan glut Debug: Compiling...
-"%MSBUILD%" "%CD%\..\dependencies\glut\glut_2012.vcxproj" /p:configuration=Debug /p:Platform="x64" /verbosity:minimal 
-if %ERRORLEVEL% GEQ 1 goto :ERROR
-echo.
 
 :GENERATE_PROJECT
 powershell write-host -fore White ------------------------------------------------------------------------------------------------------
 powershell write-host -fore White GENERATING PROJECT ...
 powershell write-host -fore White ------------------------------------------------------------------------------------------------------
 
-
 echo.
 powershell write-host -fore Cyan Generating...
 call premake5.exe vs2019
 if %ERRORLEVEL% GEQ 1 goto :ERROR
 echo.
+
 
 :DONE
 powershell write-host -fore White ------------------------------------------------------------------------------------------------------
