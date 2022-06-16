@@ -80,7 +80,7 @@ project "CS396_ECS_v1"
 	-- Lib files pathing
 	libdirs
 	{ 
-		"%{prj.location}/../../dependencies/freeglut_lib_bin"
+		"%{prj.location}/../../dependencies/freeglut_lib_bin/lib"
 	}
 
     -- Properties under "All" Configuration
@@ -95,27 +95,7 @@ project "CS396_ECS_v1"
 		symbols "On"
 		linkoptions{"/NODEFAULTLIB:libcmt.lib"}
 
-	links
-	{
-		"freeglutd.lib"
-	}
-
-	postbuildcommands
-	{
-		"{copy} %{prj.location}/../../dependencies/freeglut_lib_bin/glutd.dll %{prj.location}/bin/%{cfg.buildcfg}"
-	}
-
     -- Properties under "Release" Configuration
 	filter "configurations:Release"
 		runtime "Release"
 		optimize "On"
-
-	links
-	{
-		"freeglut.lib"
-	}
-
-	postbuildcommands
-	{
-		"{copy} %{prj.location}/../../dependencies/freeglut_lib_bin/glut.dll %{prj.location}/bin/%{cfg.buildcfg}"
-	}

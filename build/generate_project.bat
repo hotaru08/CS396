@@ -10,6 +10,10 @@ rmdir "../dependencies/freeglut" /S /Q
 git clone https://github.com/FreeGLUTProject/freeglut.git "../dependencies/freeglut"
 if %ERRORLEVEL% GEQ 1 goto :PAUSE
 
+rmdir "../dependencies/freeglut_lib_bin" /S /Q
+git clone https://github.com/hotaru08/freeglut_lib_bin.git "../dependencies/freeglut_lib_bin"
+if %ERRORLEVEL% GEQ 1 goto :PAUSE
+
 
 :GENERATE_PROJECT
 powershell write-host -fore White ------------------------------------------------------------------------------------------------------

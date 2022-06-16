@@ -10,6 +10,7 @@ Description:
 ******************************************************************************/
 #include <FiE_ECS_includes.h>
 
+#define FREEGLUT_STATIC
 #include "GL/freeglut.h"
 #include <random>
 
