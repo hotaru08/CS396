@@ -82,6 +82,7 @@ project "CS396_ECS_v1"
 		staticruntime "On"
 		systemversion "latest"
 		disablewarnings "4201"
+		buildoptions { "/Zc:twoPhase-" }
 
     -- Properties under "Debug" Configuration
 	filter "configurations:Debug"
