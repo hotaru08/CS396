@@ -10,15 +10,15 @@ workspace "CS396_ECS"           -- Solution Name
 	}
 
 -- Type Aliases
-outputdir        	= "bin/%{prj.name}/%{cfg.buildcfg}"
-objOutputDir     	= "bin-int/%{prj.name}/%{cfg.buildcfg}"
+outputdir        	= "projects/bin/%{cfg.buildcfg}"
+objOutputDir     	= "projects/bin-int/%{cfg.buildcfg}"
 sourceFilesPath  	= "%{prj.location}/../../src"
 projectFilesPath 	= "projects"
 depFilePath			= "dependencies"
 
 ------ Include Directories -------------------------------------------
 IncludeDir = {}
-IncludeDir["glut"] 	= "%{prj.location}/../../dependencies/glut/include"
+IncludeDir["freeglut"] 	= "%{prj.location}/../../dependencies/freeglut/include"
 
 ------ PotatoEngine --------------------------------------------------
 project "CS396_ECS_v1"
@@ -61,7 +61,7 @@ project "CS396_ECS_v1"
 		sourceFilesPath .. "/",
         
         -- External Libraries
-		"%{IncludeDir.glut}"
+		"%{IncludeDir.freeglut}"
 	}
     
     -- Prepocessor defines
@@ -77,6 +77,12 @@ project "CS396_ECS_v1"
 		"MultiProcessorCompile"
 	}
 
+	-- Lib files pathing
+	libdirs
+	{ 
+		"%{prj.location}/../../dependencies/freeglut_lib_bin/lib"
+	}
+
     -- Properties under "All" Configuration
 	filter "system:windows"
 		staticruntime "On"
@@ -90,23 +96,7 @@ project "CS396_ECS_v1"
 		symbols "On"
 		linkoptions{"/NODEFAULTLIB:libcmt.lib"}
 
-	libdirs
-	{
-		"%{prj.location}/../../dependencies/glut/x64/Debug"
-	}
-
-	links
-	{
-
-	}
-
     -- Properties under "Release" Configuration
 	filter "configurations:Release"
 		runtime "Release"
 		optimize "On"
-
-	libdirs
-	{ 
-		"%{prj.location}/../../dependencies/glut/x64/Release"
-	}
-        

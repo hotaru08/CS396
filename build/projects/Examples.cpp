@@ -10,8 +10,8 @@ Description:
 ******************************************************************************/
 #include <FiE_ECS_includes.h>
 
-#define GLUT_STATIC_LIB
-#include "GL/glut.h"
+#define FREEGLUT_STATIC
+#include "GL/freeglut.h"
 #include <random>
 
 static struct Window
@@ -177,7 +177,6 @@ void TestCase2n5()
 
 	Vector2D vec2;
 	Vector2D* pVec2;
-	Vector2D& vec2v2{ vec2 };
 	std::cout << typeid(Vector2D).name() << std::endl;
 	std::cout << typeid(decltype(&Vector2D::operator())).name() << std::endl;
 	std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(&Vector2D::operator()) > ::return_type_t).name() << std::endl;
@@ -222,7 +221,7 @@ void TestCase3()
 		bits,
 		inst
 	};
-	archetype.CreateEntity();
+	//archetype.CreateEntity();
 
 	std::cout << "\033[1m\033[33m" << "\n----- END TEST -----\n" << "\033[0m\033[37m" << std::endl;
 }
@@ -271,38 +270,42 @@ int main(int argc, char** argv)
 	TestCases();
 
 	// Setup Window Instance, Graphics and GameLoop
-	//{
-	//	glutInitWindowSize(sg_gameWindow.m_width, sg_gameWindow.m_height);
-	//	glutInitWindowPosition(sg_gameWindow.m_posX, sg_gameWindow.m_posY);
-	//
-	//	glutInit(&argc, argv);
-	//	glutCreateWindow("CS396 Assignment 01");
+	{
+		glutInitWindowSize(sg_gameWindow.m_width, sg_gameWindow.m_height);
+		glutInitWindowPosition(sg_gameWindow.m_posX, sg_gameWindow.m_posY);
+	
+		glutInit(&argc, argv);
+		glutCreateWindow("CS396 Assignment 01");
+		glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 
-	//	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-	//	glutReshapeFunc
-	//	(
-	//		[](int w, int h)
-	//		{
-	//			sg_gameWindow.m_width	= w;
-	//			sg_gameWindow.m_height	= h;
-	//			glViewport(0, 0, w, h);
-	//			glMatrixMode(GL_PROJECTION);
-	//			glLoadIdentity();
-	//			glOrtho(0, w, 0, h, -1, 1);
-	//			glScalef(1, -1, 1);
-	//			glTranslatef(0, -h, 0);
-	//		}
-	//	);
-	//	glutDisplayFunc
-	//	(
-	//		[]()
-	//		{
-	//			sg_gameWindow.m_ecsManager->Update();
-	//		}
-	//	);
+		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
+		glutReshapeFunc
+		(
+			[](int w, int h)
+			{
+				float fw = static_cast<float>(w);
+				float fh = static_cast<float>(h);
 
-	//	glutMainLoop();
-	//}
+				sg_gameWindow.m_width	= w;
+				sg_gameWindow.m_height	= h;
+				glViewport(0, 0, w, h);
+				glMatrixMode(GL_PROJECTION);
+				glLoadIdentity();
+				glOrtho(0, fw, 0, fh, -1, 1);
+				glScalef(1, -1, 1);
+				glTranslatef(0, -fh, 0);
+			}
+		);
+		glutDisplayFunc
+		(
+			[]()
+			{
+				sg_gameWindow.m_ecsManager->Update();
+			}
+		);
+
+		glutMainLoop();
+	}
 
 	std::cout << "Exiting application ..." << std::endl;
 }
