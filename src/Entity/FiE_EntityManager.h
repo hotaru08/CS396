@@ -20,7 +20,8 @@ namespace FireflyEngine::entity
 		// RemoveEntity
 		// 
 
-		//std::unique_ptr
+		std::unique_ptr<GlobalEntity> m_globalEntities; //<! Container storing all global entities
+
 
 	public:
 

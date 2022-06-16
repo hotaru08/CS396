@@ -73,7 +73,7 @@ namespace FireflyEngine::archetype
 		std::vector< entity::Entity > m_toDeleteEntities; //<! Stores the entities that are to be deleted (prevent structural changes)
 		
 		entity::Manager&			  m_entityManager;	  //<! Reference to manager that handles the entities
-		archetype::Pool		      m_pool;			  //<! Pool that manages the components and entities of archetype
+		archetype::Pool				  m_pool;			  //<! Pool that manages the components and entities of archetype
 		std::uint32_t				  m_processesRunning; //<! Number of systems running, to ensure only update after all systems
 	};
 

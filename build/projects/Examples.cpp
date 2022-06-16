@@ -90,137 +90,143 @@ void Foo()
 	std::cout << "called in function" << std::endl;
 }
 
+/* Test 01 - Registering components */
+void TestCases1()
+{
+	std::cout << "\033[1m\033[33m" << "\n----- START TEST 01 -----\n" << "\033[0m\033[37m" << std::endl;
+	std::unique_ptr<FireflyEngine::component::Manager> compMgr =
+		std::make_unique<FireflyEngine::component::Manager>();
+
+	compMgr->RegisterComponents<
+		Position,
+		Rotation,
+		Scale
+	>();
+
+	std::cout << FireflyEngine::component::info_v< Scale >.m_uid << std::endl;
+	std::cout << FireflyEngine::component::info_v< Scale >.m_uid << std::endl;
+	std::cout << "\033[1m\033[33m" << "\n----- END TEST -----\n" << "\033[0m\033[37m" << std::endl;
+}
+
+/* Test 02 - Archetype Pool */
+void TestCase2()
+{
+	std::cout << "\033[1m\033[33m" << "\n----- START TEST 02 -----\n" << "\033[0m\033[37m" << std::endl;
+	using info_type = FireflyEngine::archetype::Pool::component_info_t;
+	constexpr auto info_size_v = 3;
+
+	std::array< info_type, info_size_v> arr
+	{
+		&FireflyEngine::component::info_v< Rotation >,
+		&FireflyEngine::component::info_v< Scale >,
+		&FireflyEngine::component::info_v< Position >
+	};
+
+	FireflyEngine::archetype::Pool poolInst
+	{
+		std::span< info_type >{ arr.data(), arr.size() }
+	};
+
+	const auto index = poolInst.Append();
+	const auto index2 = poolInst.Append();
+	const auto index3 = poolInst.Append();
+
+	std::cout << "Finding Scale Component in Pool ... " << std::endl;
+	const std::int32_t findCompIndex = poolInst.FindComponentType(arr[1]->m_uid);
+
+	findCompIndex > 0 ?
+		std::cout << "Found at " << findCompIndex << std::endl :
+		std::cout << "Component not found." << std::endl;
+
+	//auto& comp = poolInst.GetComponent< Vector2D >(index); // Test assert
+	auto& comp = poolInst.GetComponent< Rotation >(index);
+
+	std::cout
+		<< "Rotation uid: "
+		<< FireflyEngine::component::info_v < decltype(comp) >.m_uid
+		<< std::endl; // shld be 1 (order of registration)
+
+	std::cout << "Rotation along z-axis: " << comp.m_rz << std::endl;
+
+	poolInst.Delete(index);
+	std::cout << "\033[1m\033[33m" << "\n----- END TEST -----\n" << "\033[0m\033[37m" << std::endl;
+}
+
+/* Test 02.5 - Function traits */
+void TestCase2n5()
+{
+	std::cout << "\033[1m\033[33m" << "\n----- START TEST 02.5 -----\n" << "\033[0m\033[37m" << std::endl;
+
+	std::cout << "\033[1m\034[33m" << "\n----- Function Traits -----\n" << "\033[0m\033[37m" << std::endl;
+
+	std::cout << typeid(FireflyEngine::tools::traits::fn_traits< int() >::return_type_t).name() << std::endl;
+	std::cout << typeid(FireflyEngine::tools::traits::fn_traits< void(*)() >::return_type_t).name() << std::endl;
+	std::cout << typeid(FireflyEngine::tools::traits::fn_traits< void* (*)() >::return_type_t).name() << std::endl;
+	std::cout << typeid(FireflyEngine::tools::traits::fn_traits< int* (*)() >::return_type_t).name() << std::endl;
+	std::cout << typeid(FireflyEngine::tools::traits::fn_traits< int& (*)() >::return_type_t).name() << std::endl;
+
+	auto l = []()
+	{
+		return []()
+		{
+			return true;
+		};
+	};
+	std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(l) > ::return_type_t).name() << std::endl;
+
+	Vector2D vec2;
+	Vector2D* pVec2;
+	std::cout << typeid(Vector2D).name() << std::endl;
+	std::cout << typeid(decltype(&Vector2D::operator())).name() << std::endl;
+	std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(&Vector2D::operator()) > ::return_type_t).name() << std::endl;
+
+	std::cout << "------" << std::endl;
+	std::cout << typeid(decltype(vec2)).name() << std::endl;
+	std::cout << typeid(decltype(pVec2)).name() << std::endl;
+	std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(vec2) >::return_type_t).name() << std::endl;
+	std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(pVec2) >::return_type_t).name() << std::endl;
+
+	std::cout << "\033[1m\034[33m" << "\n----- Tuple Traits -----\n" << "\033[0m\033[37m" << std::endl;
+
+
+	std::cout << "\033[1m\033[33m" << "\n----- END TEST -----\n" << "\033[0m\033[37m" << std::endl;
+}
+
+/* Test 03 - Archetype, Signatures, Pool */
+void TestCase3()
+{
+	std::cout << "\033[1m\033[33m" << "\n----- START TEST 03 -----\n" << "\033[0m\033[37m" << std::endl;
+	FireflyEngine::tools::Bits bits;
+	bits.SetBitsFromComponents < Position >();
+	FireflyEngine::entity::Manager inst;
+
+	using info_type = FireflyEngine::archetype::Archetype::component_info_t;
+	constexpr auto info_size_v = 3;
+
+	std::array< info_type, info_size_v> arr
+	{
+		&FireflyEngine::component::info_v< Rotation >,
+		&FireflyEngine::component::info_v< Scale >,
+		&FireflyEngine::component::info_v< Position >
+	};
+
+	FireflyEngine::archetype::Archetype archetype
+	{
+		std::span< info_type >{ arr.data(), arr.size() },
+		bits,
+		inst
+	};
+	//archetype.CreateEntity([]() {});
+
+	std::cout << "\033[1m\033[33m" << "\n----- END TEST -----\n" << "\033[0m\033[37m" << std::endl;
+}
+
 void TestCases()
 {
-	/* Test 01 - Registering components */
-	{
-		std::cout << "\033[1m\033[33m" << "\n----- START TEST 01 -----\n" << "\033[0m\033[37m" << std::endl;
-		std::unique_ptr<FireflyEngine::component::Manager> compMgr =
-			std::make_unique<FireflyEngine::component::Manager>();
-
-		compMgr->RegisterComponents< 
-			Position, 
-			Rotation, 
-			Scale 
-		>();
-
-		std::cout << FireflyEngine::component::info_v< Scale >.m_uid << std::endl;
-		std::cout << FireflyEngine::component::info_v< Scale >.m_uid << std::endl;
-		std::cout << "\033[1m\033[33m" << "\n----- END TEST -----\n" << "\033[0m\033[37m" << std::endl;
-	}
-
-	/* Test 02 - Archetype Pool */
-	{
-		std::cout << "\033[1m\033[33m" << "\n----- START TEST 02 -----\n" << "\033[0m\033[37m" << std::endl;
-		using info_type = FireflyEngine::archetype::Pool::component_info_t;
-		constexpr auto info_size_v = 3;
-
-		std::array< info_type, info_size_v> arr
-		{ 
-			&FireflyEngine::component::info_v< Rotation >,
-			&FireflyEngine::component::info_v< Scale >,
-			&FireflyEngine::component::info_v< Position >
-		};
-
-		FireflyEngine::archetype::Pool poolInst 
-		{ 
-			std::span< info_type >{ arr.data(), arr.size() }
-		};
-
-		const auto index = poolInst.Append();
-		const auto index2 = poolInst.Append();
-		const auto index3 = poolInst.Append();
-
-		std::cout << "Finding Scale Component in Pool ... " << std::endl;
-		const std::int32_t findCompIndex = poolInst.FindComponentType(arr[1]->m_uid);
-		
-		findCompIndex > 0 ?
-			std::cout << "Found at " << findCompIndex << std::endl :
-			std::cout << "Component not found." << std::endl;
-
-		//auto& comp = poolInst.GetComponent< Vector2D >(index); // Test assert
-		auto& comp = poolInst.GetComponent< Rotation >(index);
-
-		std::cout 
-			<< "Rotation uid: "
-			<< FireflyEngine::component::info_v < decltype(comp) >.m_uid
-			<< std::endl; // shld be 1 (order of registration)
-
-		std::cout << "Rotation along z-axis: " << comp.m_rz << std::endl;
-
-		poolInst.Delete(index);
-		std::cout << "\033[1m\033[33m" << "\n----- END TEST -----\n" << "\033[0m\033[37m" << std::endl;
-	}
-
-	/* Test 02.5 - Function traits */
-	{
-		std::cout << "\033[1m\033[33m" << "\n----- START TEST 02.5 -----\n" << "\033[0m\033[37m" << std::endl;
-
-		std::cout << "\033[1m\034[33m" << "\n----- Function Traits -----\n" << "\033[0m\033[37m" << std::endl;
-
-		std::cout << typeid(FireflyEngine::tools::traits::fn_traits< int() >::return_type_t).name() << std::endl;
-		std::cout << typeid(FireflyEngine::tools::traits::fn_traits< void(*)() >::return_type_t).name() << std::endl;
-		std::cout << typeid(FireflyEngine::tools::traits::fn_traits< void*(*)() >::return_type_t).name() << std::endl;
-		std::cout << typeid(FireflyEngine::tools::traits::fn_traits< int*(*)() >::return_type_t).name() << std::endl;
-		std::cout << typeid(FireflyEngine::tools::traits::fn_traits< int&(*)() >::return_type_t).name() << std::endl;
-		
-		auto* l = +[]()
-		{
-			return []()
-			{
-				return true;
-			};
-		};
-		std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(l) > ::return_type_t).name() << std::endl;
-		
-		Vector2D vec2;
-		Vector2D* pVec2;
-		std::cout << typeid(Vector2D).name() << std::endl;
-		std::cout << typeid(decltype(&Vector2D::operator())).name() << std::endl;
-		std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(&Vector2D::operator()) > ::return_type_t).name() << std::endl;
-
-		std::cout << "------" << std::endl;
-		std::cout << typeid( decltype(vec2) ).name() << std::endl;
-		std::cout << typeid( decltype(pVec2) ).name() << std::endl;
-		std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(vec2) >::return_type_t).name() << std::endl;
-		std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(pVec2) >::return_type_t).name() << std::endl;
-		
-		std::cout << "\033[1m\033[33m" << "\n----- END TEST -----\n" << "\033[0m\033[37m" << std::endl;
-	}
-
-	/* Test 03 - Archetype, Signatures, Pool */
-	{
-		std::cout << "\033[1m\033[33m" << "\n----- START TEST 03 -----\n" << "\033[0m\033[37m" << std::endl;
-		FireflyEngine::tools::Bits bits;
-		bits.SetBitsFromComponents < Position >();
-		FireflyEngine::entity::Manager inst;
-
-		using info_type = FireflyEngine::archetype::Archetype::component_info_t;
-		constexpr auto info_size_v = 3;
-
-		std::array< info_type, info_size_v> arr
-		{
-			&FireflyEngine::component::info_v< Rotation >,
-			&FireflyEngine::component::info_v< Scale >,
-			&FireflyEngine::component::info_v< Position >
-		};
-
-		FireflyEngine::archetype::Archetype archetype
-		{
-			std::span< info_type >{ arr.data(), arr.size() },
-			bits,
-			inst
-		};
-		//archetype.CreateEntity([]() {});
-
-		std::cout << "\033[1m\033[33m" << "\n----- END TEST -----\n" << "\033[0m\033[37m" << std::endl;
-	}
-
-	/* Test 04 - Registering Systems */
-
-	/* Test 05 - Systems, Archetypes, Query */
-
-	/* Test 06 - Overall Manager (ECS manager) */
+	TestCase1();
+	TestCase2();
+	TestCase2n5();
+	TestCase3();
 }
 
 void Init()

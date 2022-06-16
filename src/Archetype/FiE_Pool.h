@@ -27,15 +27,15 @@ namespace FireflyEngine::archetype
 		// Constructors / Destructor
 		// ------------------------------------------------------------------------
 
-		Pool() noexcept;
 		Pool(const std::span < component_info_t >& _componentInfos) noexcept;
 		~Pool() noexcept;
 
+		Pool() noexcept										= delete;
 		Pool(const Pool& _otherInst) noexcept			    = delete; // Unable to copy Pool data to other pools
-		Pool& operator=(const Pool& _otherInst) noexcept  = delete;
+		Pool& operator=(const Pool& _otherInst) noexcept    = delete;
 
-		Pool(const Pool&& _otherInst) noexcept			= delete; // Unable to move Pool data to other pools
-		Pool& operator=(const Pool&& _otherInst) noexcept = delete;
+		Pool(const Pool&& _otherInst) noexcept				= delete; // Unable to move Pool data to other pools
+		Pool& operator=(const Pool&& _otherInst) noexcept	= delete;
 
 
 		// ------------------------------------------------------------------------
@@ -63,7 +63,7 @@ namespace FireflyEngine::archetype
 		// ------------------------------------------------------------------------
 		
 		// Finds for the index where the component to be found is located in this Pool
-		constexpr std::int32_t FindComponentType(const sharedinfo::component_uid_t& _uid) const noexcept;
+		constexpr std::int32_t FindComponentTypeIndex(const sharedinfo::component_uid_t& _uid) const noexcept;
 
 		// Retrieves the specified component at specified entity index
 		template < typename Component >

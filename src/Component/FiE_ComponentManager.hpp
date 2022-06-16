@@ -15,7 +15,7 @@ namespace FireflyEngine::component
 	{
 		// Reference to component's information
 		constexpr auto& uid = info_v< Component >.m_uid;
-		if (uid != FireflyEngine::sharedinfo::invalid_info_v)
+		if constexpr (uid != FireflyEngine::sharedinfo::invalid_info_v)
 			return;
 
 		// Set UID of component, adding to unique components count

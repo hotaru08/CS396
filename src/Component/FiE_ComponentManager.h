@@ -17,7 +17,7 @@ namespace FireflyEngine::component
 	// ------------------------------------------------------------------------
 	class Manager final
 	{
-		inline static sharedinfo::component_uid_t m_numComponents;		  //<! How many unqiue components are registered
+		inline static sharedinfo::component_uid_t m_numComponents = 0;		  //<! How many unqiue components are registered
 
 		// For internally registering component
 		template < typename Component >

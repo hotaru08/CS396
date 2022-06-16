@@ -39,43 +39,46 @@ namespace FireflyEngine::component
 	// ------------------------------------------------------------------------
 	// Creating and retrieving info of components
 	// ------------------------------------------------------------------------
-	template < typename Component >
-	consteval auto CreateInfo() noexcept
+	namespace details
 	{
-		return Info
+		template < typename Component >
+		consteval auto CreateInfo() noexcept
 		{
-			// Handling for trivially constructable (primitive types) - no need to call special functions
-			.m_pConstructor =
-				std::is_trivially_constructible_v< Component > ? nullptr :
-				[](std::byte* _src) noexcept
-				{
-					new (_src) Component;
-				},
+			return Info
+			{
+				// Handling for trivially constructable (primitive types) - no need to call special functions
+				.m_pConstructor =
+					std::is_trivially_constructible_v< Component > ? nullptr :
+					[](std::byte* _src) noexcept
+					{
+						new (_src) Component;
+					},
 
-			.m_pDestructor =
-				std::is_trivially_destructible_v< Component > ? nullptr :
-				[](std::byte* _src) noexcept
-				{
-					std::destroy_at(reinterpret_cast<Component*>(_src));
-				},
+				.m_pDestructor =
+					std::is_trivially_destructible_v< Component > ? nullptr :
+					[](std::byte* _src) noexcept
+					{
+						std::destroy_at(reinterpret_cast<Component*>(_src));
+					},
 
-			.m_pMoveFunc =
-				std::is_trivially_move_assignable_v< Component > ? nullptr :
-				[](std::byte* _src, std::byte* _dest) noexcept
-				{
-					*reinterpret_cast<Component*>(_dest) = std::move(*reinterpret_cast<Component*>(_src));
-				},
+				.m_pMoveFunc =
+					std::is_trivially_move_assignable_v< Component > ? nullptr :
+					[](std::byte* _src, std::byte* _dest) noexcept
+					{
+						*reinterpret_cast<Component*>(_dest) = std::move(*reinterpret_cast<Component*>(_src));
+					},
 
-			.m_uid  = FireflyEngine::sharedinfo::invalid_info_v,
-			.m_size = sizeof(Component)
-		};
+				.m_uid = FireflyEngine::sharedinfo::invalid_info_v,
+				.m_size = sizeof(Component)
+			};
+		}
+
+		// Information of the component (only one instance per component)
+		template < typename T >
+		static constexpr auto create_info_v = CreateInfo< T >();
 	}
-
-	// Information of the component (only one instance per component)
-	template < typename T >
-	static constexpr auto create_info_v = CreateInfo< T >();
 
 	// Reference to component's information
 	template < typename T >
-	constexpr auto& info_v = create_info_v< std::decay_t< T > >;
+	constexpr auto& info_v = details::create_info_v< std::decay_t< T > >;
 }

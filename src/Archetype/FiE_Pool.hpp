@@ -28,15 +28,9 @@ namespace FireflyEngine::archetype
 	// Member Functions
 	// ------------------------------------------------------------------------
 
-	inline Pool::Pool() noexcept
-		: m_numEntities { 0 },
-		  m_pComponents { }
-	{
-	}
-
-	inline Pool::Pool(
-		const std::span < component_info_t >& _componentInfos) noexcept
-		: Pool { }
+	inline Pool::Pool(const std::span < component_info_t >& _componentInfos) noexcept
+		: m_numEntities{ 0 },
+		  m_pComponents{ }
 	{
 		Initialize(_componentInfos);
 	}
@@ -48,7 +42,7 @@ namespace FireflyEngine::archetype
 
 		// Virtually allocated memory, deallocate here
 		Clear();
-		for (auto* ptr : m_pComponents)
+		for (std::byte* ptr : m_pComponents)
 			VirtualFree(ptr, 0, MEM_RELEASE);
 	}
 	
@@ -77,7 +71,7 @@ namespace FireflyEngine::archetype
 
 	inline sharedinfo::entity_index_t Pool::Append() noexcept
 	{
-		assert(m_numEntities < sharedinfo::max_num_entity_per_pool_v);
+		assert(m_numEntities < sharedinfo::max_num_entity_per_pool_v - 1);
 
 		// For each component, get the page to append new entity
 		const auto size = m_pCompInfos.size();
@@ -204,7 +198,7 @@ namespace FireflyEngine::archetype
 	}
 
 	inline constexpr std::int32_t
-	Pool::FindComponentType(
+	Pool::FindComponentTypeIndex(
 		const FireflyEngine::sharedinfo::component_uid_t& _uid) const noexcept
 	{
 		const auto size = m_pCompInfos.size();
@@ -225,7 +219,7 @@ namespace FireflyEngine::archetype
 		const FireflyEngine::sharedinfo::entity_index_t& _entityIndex) const noexcept
 	{	
 		const auto& info = component::info_v< Component >;
-		const auto typeIndex = FindComponentType(info.m_uid);
+		const auto typeIndex = FindComponentTypeIndex(info.m_uid);
 		assert(typeIndex >= 0);
 
 		return *reinterpret_cast< Component* >
