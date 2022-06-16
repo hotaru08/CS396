@@ -36,7 +36,6 @@ struct Vector2D
 
 	void operator()()
 	{
-		
 	}
 };
 
@@ -70,17 +69,6 @@ struct Scale
 		std::cout << "Called Scale move" << std::endl;
 		return *this;
 	}
-
-	//Scale& operator=(const Scale& _rhs)
-	//{
-	//	m_sx = _rhs.m_sx;
-	//	m_sy = _rhs.m_sy;
-
-	//	delete ptr;
-	//	ptr = _rhs.ptr;
-
-	//	return *this;
-	//}
 
 	~Scale()
 	{
@@ -167,6 +155,9 @@ void TestCases()
 	/* Test 02.5 - Function traits */
 	{
 		std::cout << "\033[1m\033[33m" << "\n----- START TEST 02.5 -----\n" << "\033[0m\033[37m" << std::endl;
+
+		std::cout << "\033[1m\034[33m" << "\n----- Function Traits -----\n" << "\033[0m\033[37m" << std::endl;
+
 		std::cout << typeid(FireflyEngine::tools::traits::fn_traits< int() >::return_type_t).name() << std::endl;
 		std::cout << typeid(FireflyEngine::tools::traits::fn_traits< void(*)() >::return_type_t).name() << std::endl;
 		std::cout << typeid(FireflyEngine::tools::traits::fn_traits< void*(*)() >::return_type_t).name() << std::endl;
@@ -183,19 +174,16 @@ void TestCases()
 		std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(l) > ::return_type_t).name() << std::endl;
 		
 		Vector2D vec2;
+		Vector2D* pVec2;
+		std::cout << typeid(Vector2D).name() << std::endl;
 		std::cout << typeid(decltype(&Vector2D::operator())).name() << std::endl;
 		std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(&Vector2D::operator()) > ::return_type_t).name() << std::endl;
 
 		std::cout << "------" << std::endl;
-		std::cout << typeid(decltype(vec2())).name() << std::endl;
-		//std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(&vec2.operator()) >::return_type_t).name << std::endl;
-
-		//auto* address = l;
-		//std::cout << decltype(address) << std::endl;
-		//std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(address) > ::return_type_t).name() << std::endl;
-		
-		
-		
+		std::cout << typeid( decltype(vec2) ).name() << std::endl;
+		std::cout << typeid( decltype(pVec2) ).name() << std::endl;
+		std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(vec2) >::return_type_t).name() << std::endl;
+		std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(pVec2) >::return_type_t).name() << std::endl;
 		
 		std::cout << "\033[1m\033[33m" << "\n----- END TEST -----\n" << "\033[0m\033[37m" << std::endl;
 	}
@@ -274,7 +262,6 @@ int main(int argc, char** argv)
 	//{
 	//	glutInitWindowSize(sg_gameWindow.m_width, sg_gameWindow.m_height);
 	//	glutInitWindowPosition(sg_gameWindow.m_posX, sg_gameWindow.m_posY);
-	//	//glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 	//
 	//	glutInit(&argc, argv);
 	//	glutCreateWindow("CS396 Assignment 01");
@@ -302,9 +289,8 @@ int main(int argc, char** argv)
 	//		}
 	//	);
 
-	//	//glutLeaveMainLoop();
+	//	glutMainLoop();
 	//}
-	//glutMainLoop();
 
 	std::cout << "Exiting application ..." << std::endl;
 }

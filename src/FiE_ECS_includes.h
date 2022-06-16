@@ -36,7 +36,7 @@ Description:
 /* Shared Info */
 #include <Info\FiE_ECS_SharedInfo.h>
 #include <Info\FiE_ECS_Bits.h>
-#include <Info\FiE_FunctionTraits.h>
+#include <Info\FiE_Type_Traits.h>
 
 /* Entities */
 #include <Entity\FiE_Entity.h>
