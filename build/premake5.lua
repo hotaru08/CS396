@@ -34,6 +34,8 @@ project "CS396_ECS_v1"
     targetdir ( outputdir )
     objdir    ( objOutputDir )
 
+	targetname ("CS396 Assignment 01")
+
     -- Adding Files into project
 	files
 	{
@@ -96,7 +98,17 @@ project "CS396_ECS_v1"
 		symbols "On"
 		linkoptions{"/NODEFAULTLIB:libcmt.lib"}
 
+	postbuildcommands
+	{
+		"{copy} ../../dependencies/freeglut_lib_bin/bin/freeglutd.dll bin/%{cfg.buildcfg}"
+	}
+
     -- Properties under "Release" Configuration
 	filter "configurations:Release"
 		runtime "Release"
 		optimize "On"
+
+	postbuildcommands
+	{
+		"{copy} /../../dependencies/freeglut_lib_bin/bin/freeglut.dll bin/%{cfg.buildcfg}"
+	}

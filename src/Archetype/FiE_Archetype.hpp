@@ -19,7 +19,7 @@ namespace FireflyEngine::archetype
 		  m_compSignature		{ _bits },
 		  m_toDeleteEntities	{ },
 		  m_entityManager		{ _entityManager },
-		  m_pool				{ _componentInfos },
+		  m_currPool			{ _componentInfos },
 		  m_processesRunning	{ 0 }
 	{
 		const auto size = _componentInfos.size();
