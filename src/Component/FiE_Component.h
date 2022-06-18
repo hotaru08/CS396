@@ -42,9 +42,9 @@ namespace FireflyEngine::component
 	namespace details
 	{
 		template < typename Component >
-		consteval auto CreateInfo() noexcept
+		consteval Info CreateInfo() noexcept
 		{
-			return Info
+			return
 			{
 				// Handling for trivially constructable (primitive types) - no need to call special functions
 				.m_pConstructor =
@@ -80,5 +80,5 @@ namespace FireflyEngine::component
 
 	// Reference to component's information
 	template < typename T >
-	constexpr auto& info_v = details::create_info_v< std::decay_t< T > >;
+	constexpr auto& info_v = details::create_info_v< tools::traits::base_type_t< T > >;
 }

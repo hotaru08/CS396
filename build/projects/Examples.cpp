@@ -10,7 +10,7 @@ Description:
 ******************************************************************************/
 #include <FiE_ECS_includes.h>
 
-#define FREEGLUT_STATIC
+//#define FREEGLUT_STATIC
 #include "GL/freeglut.h"
 #include <random>
 
@@ -168,19 +168,18 @@ void TestCase2n5()
 	std::cout << "lambda" << std::endl;
 	auto l = []()
 	{
-		//return []()
-		//{
-		//	return true;
-		//};
+		return []()
+		{
+			return true;
+		};
 	};
 	std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(l) > ::return_type_t).name() << std::endl;
 
 	Vector2D vec2;
 	Vector2D* pVec2;
-	std::cout << typeid(Vector2D).name() << std::endl;
-	std::cout << typeid(decltype(&Vector2D::operator())).name() << std::endl;
 	std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(&Vector2D::operator()) > ::return_type_t).name() << std::endl;
 	std::cout << typeid(FireflyEngine::tools::traits::fn_traits < Vector2D > ::return_type_t).name() << std::endl;
+	std::cout << typeid(FireflyEngine::tools::traits::fn_traits < Vector2D* > ::return_type_t).name() << std::endl;
 	std::cout << typeid(FireflyEngine::tools::traits::fn_traits < Vector2D& > ::return_type_t).name() << std::endl;
 
 	std::cout << "------" << std::endl;
@@ -189,25 +188,21 @@ void TestCase2n5()
 	std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(vec2) >::return_type_t).name() << std::endl;
 	std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(pVec2) >::return_type_t).name() << std::endl;
 
-	
-
-	std::cout << "\033[1m\033[34m" << "\n----- Tuple Traits -----\n" << "\033[0m\033[37m" << std::endl;
-
-
 	std::cout << "\033[1m\033[33m" << "\n----- END TEST -----\n" << "\033[0m\033[37m" << std::endl;
 }
 
-/* Test 03 - Archetype, Signatures, Pool */
+/* Test 03 - Archetype, Queries */
 void TestCase3()
 {
 	std::cout << "\033[1m\033[33m" << "\n----- START TEST 03 -----\n" << "\033[0m\033[37m" << std::endl;
 	FireflyEngine::tools::Bits bits;
 	bits.SetBitsFromComponents < Position >();
-	FireflyEngine::entity::Manager inst;
+	std::unique_ptr<FireflyEngine::entity::Manager> inst =
+		std::make_unique<FireflyEngine::entity::Manager>();
 
 	using info_type = FireflyEngine::archetype::Archetype::component_info_t;
 	constexpr auto info_size_v = 3;
-
+	
 	std::array< info_type, info_size_v> arr
 	{
 		&FireflyEngine::component::info_v< Rotation >,
@@ -219,11 +214,47 @@ void TestCase3()
 	{
 		std::span< info_type >{ arr.data(), arr.size() },
 		bits,
-		inst
+		*inst
 	};
-	//archetype.CreateEntity();
+
+	// ------------------------------------------------------------------------
+	FireflyEngine::query::instance testQuery, testQuery1;
+
+	testQuery.AddToQueryFromFunction(
+		[](Position& pos, Rotation& rot, Scale* scale)
+		{
+		}
+	);
+
+	std::tuple
+	<
+		FireflyEngine::query::MustHave< Position >,
+		FireflyEngine::query::OneOf   < Rotation >
+	> testTuple;
+	testQuery1.AddToQueryFromTuple(&testTuple);
 
 	std::cout << "\033[1m\033[33m" << "\n----- END TEST -----\n" << "\033[0m\033[37m" << std::endl;
+}
+
+/* Test 04 - Creating Entities  */
+void TestCase4()
+{
+	std::unique_ptr<FireflyEngine::entity::Manager> inst =
+		std::make_unique<FireflyEngine::entity::Manager>();
+
+	inst->CreateEntity();								// No Components
+	//inst->CreateEntity< Position, Rotation, Scale >();	// Archtype - Position, Rotation, Scale (create)
+	//inst->CreateEntity(
+	//	[](Position&, Rotation&, Scale&)				// ^, should retrieve existing archetype not create
+	//	{
+
+	//	}
+	//);
+}
+
+void TestCase5()
+{
+	//sg_gameWindow.m_ecsManager->CreateEntity< Position, Rotation, Scale >();
 }
 
 void TestCases()
@@ -232,32 +263,7 @@ void TestCases()
 	TestCase2();
 	TestCase2n5();
 	TestCase3();
-}
-
-void Init()
-{
-	//
-	// Register all the elements of the game eg. components and systems
-
-
-	//
-	// Generate game entities
-	std::srand(100);
-	//auto& SpaceShipArchetype = s_Game.m_GameMgr->getOrCreateArchetype< position, velocity, timer >();
-	//for (int i = 0; i < 1000; i++)
-	//{
-	//	SpaceShipArchetype.CreateEntity([&](position& Position, velocity& Velocity, timer& Timer)
-	//		{
-	//			Position.m_Value.m_X = std::rand() % s_Game.m_W;
-	//			Position.m_Value.m_Y = std::rand() % s_Game.m_H;
-
-	//			Velocity.m_Value.m_X = (std::rand() / (float)RAND_MAX) - 0.5f;
-	//			Velocity.m_Value.m_Y = (std::rand() / (float)RAND_MAX) - 0.5f;
-	//			Velocity.m_Value.Normalize();
-
-	//			Timer.m_Value = (std::rand() / (float)RAND_MAX) * 8;
-	//		});
-	//}
+	TestCase4();
 }
 
 int main(int argc, char** argv)
@@ -267,6 +273,7 @@ int main(int argc, char** argv)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
+	srand(100);
 	TestCases();
 
 	// Setup Window Instance, Graphics and GameLoop
@@ -300,7 +307,7 @@ int main(int argc, char** argv)
 		(
 			[]()
 			{
-				sg_gameWindow.m_ecsManager->Update();
+				sg_gameWindow.m_ecsManager->Run();
 			}
 		);
 

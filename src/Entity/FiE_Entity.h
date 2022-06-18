@@ -32,7 +32,11 @@ namespace FireflyEngine::entity
 											m_isAlive	  : 1;	//<! Flag checking if entity is alive
 			};
 		};
-		static_assert(sizeof(sharedinfo::entity_valid_t) == sizeof(validation));
+		static_assert
+		(
+			sizeof(sharedinfo::entity_valid_t) == sizeof(validation),
+			"Size of Validation is not what is expected ( 4 bytes ). Please check."
+		);
 
 		// Defines the index of entity
 		sharedinfo::entity_id_t				m_entityID;			//<! Index of entity
@@ -54,15 +58,20 @@ namespace FireflyEngine::entity
 			return m_validation.m_isAlive;
 		}
 	};
-	static_assert(sizeof(sharedinfo::entity_id_t) == sizeof(Entity));
+	static_assert
+	(
+		sizeof(sharedinfo::entity_id_t) == sizeof(Entity),
+		"Size of Entity is not what is expected ( 8 bytes ). Please check."
+	);
+
 
 	// ------------------------------------------------------------------------
-	// Global Entity Information ( wrapper to refer to internal Entity Data) 
+	// Global Entity Information ( wrapper to refer to internal Entity Data)
 	// ------------------------------------------------------------------------
 	struct GlobalEntity final
 	{
 		archetype::Archetype*		m_pArchetype;		//<! Pointer to corresponding archetype of entity
-		sharedinfo::entity_index_t	m_entIndexInPool;	//<! Entity index in archetype's Pool
+		std::int32_t				m_entIndexInPool;	//<! Entity index in archetype's Pool
 		sharedinfo::entity_valid_t	m_validation;		//<! Validation ID of entity
 	};
 }

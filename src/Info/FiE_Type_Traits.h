@@ -16,6 +16,12 @@ namespace FireflyEngine::tools
 	namespace traits
 	{
 		// --------------------------------------------------------------------------
+		// Type Traits
+		// --------------------------------------------------------------------------
+		template < typename Type >
+		using base_type_t = std::remove_pointer_t< std::decay_t< Type > >;
+		
+		// --------------------------------------------------------------------------
 		// Function Traits
 		// --------------------------------------------------------------------------
 		namespace details
@@ -24,15 +30,15 @@ namespace FireflyEngine::tools
 			//   Default = void(void::*)(void)
 			template
 			<
-				typename ReturnType = void,
-				typename ClassType  = void,
+				typename ReturnType,
+				typename ClassType,
 				typename... Args
 			>
 			struct fn_traits_info
 			{
 				using return_type_t = ReturnType;
-				using class_type_t = ClassType;
-				using args_types_t = std::tuple< Args... >;
+				using class_type_t  = ClassType;
+				using args_types_t  = std::tuple< Args... >;
 
 				static constexpr auto args_count_v = sizeof...(Args);
 			};
@@ -42,6 +48,19 @@ namespace FireflyEngine::tools
 		//   eg. fn_traits <int>
 		template < typename NonFunction >
 		struct fn_traits;
+
+		//<! Specialized template for functors / callbacks / lambdas
+		template < typename T >
+		concept has_functor = requires (std::remove_pointer_t< T > _value)
+		{
+			{ &_value.operator() };
+		};
+
+		template < has_functor Callback >
+		struct fn_traits < Callback >
+			: fn_traits < decltype(&base_type_t< Callback >::operator()) >
+		{
+		};
 
 		//<! Specialized template for normal functions
 		template < typename ReturnType, typename... Args>
@@ -70,18 +89,6 @@ namespace FireflyEngine::tools
 		{
 		};
 
-		//<! Specialized template for functors / callbacks / lambdas
-		template < typename T >
-		concept has_functor = requires (std::remove_pointer_t< T > _value)
-		{
-			{ &_value.operator() };
-		};
-
-		template < has_functor Callback >
-		struct fn_traits < Callback >
-			: fn_traits < decltype(&std::remove_pointer_t< std::decay_t< Callback > >::operator()) >
-		{
-		};
 
 		// --------------------------------------------------------------------------
 		// Function traits concepts
@@ -89,19 +96,24 @@ namespace FireflyEngine::tools
 
 		//<! Defines the constraints for checking if Type is a function
 		template < typename CallbackType >
-		concept is_function = fn_traits< CallbackType >;
+		concept is_function = requires
+		{
+			{ std::is_function_v< CallbackType > | has_functor< CallbackType > };
+		};
 
 		//<! Defines the constraints for a void function ( void(Args ...) )
 		template < typename CallbackType >
-		concept is_void_fn = requires
+		concept is_return_void_fn = requires
 		{
-			{ std::is_same_v < fn_traits< CallbackType >::return_type_t, void > };
+			{ std::is_function_v< CallbackType > | has_functor< CallbackType > };
+			{ std::is_same_v <typename fn_traits< CallbackType >::return_type_t, void > };
 		};
 
 		//<! Defines the constraints for an empty function ( void(void) )
 		template < typename CallbackType >
 		concept is_empty_fn = requires
 		{
+			{ has_functor< CallbackType > };
 			{ std::is_same_v < fn_traits< CallbackType >::return_type_t, void > };
 			{ fn_traits< CallbackType >::args_count_v == 0 };
 		};
@@ -150,6 +162,6 @@ namespace FireflyEngine::tools
 		constexpr auto null_tuple_v = static_cast< Tuple* >(nullptr);
 
 		template < typename... TupleArgs >
-		constexpr auto make_null_tuple_from_args_v = static_cast< std::tuple< TupleArgs... > >(nullptr);
+		constexpr auto make_null_tuple_from_args_v = static_cast< std::tuple< TupleArgs... >* >(nullptr);
 	}
 }

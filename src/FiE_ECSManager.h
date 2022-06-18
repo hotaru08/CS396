@@ -1,33 +1,32 @@
+/******************************************************************************
+filename:	FiE_ECSManager.h
+author:		Jolyn Wong Kaiyi, wong.k@digipen.edu
+Project:	CS396 Assignment 01
 
+Description:
+
+	Manager that provides the user with the functionalities to use the ECS.
+
+******************************************************************************/
 #pragma once
-#include <GL\freeglut.h>
 
 namespace FireflyEngine::ECS
 {
-	class Manager final
+	struct Manager final
 	{
-
-
-	public:
-
 		entity::Manager		m_entityManager;
 		component::Manager	m_componentManager;
+		system::Manager		m_systemManager;
 
-		void Update()
-		{
-			glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // Set background color to black and opaque
-			glClear(GL_COLOR_BUFFER_BIT);         // Clear the color buffer
+		template < typename... Components, tools::traits::is_empty_fn Callback = sharedinfo::empty_lambda_t >
+		entity::Entity CreateEntity(Callback&& _callback = sharedinfo::empty_lambda_t{});
 
-			// Draw a Red 1x1 Square centered at origin
-			glBegin(GL_QUADS);              // Each set of 4 vertices form a quad
-				glColor3f(1.0f, 0.0f, 0.0f); // Red
-				glVertex2f(-0.5f, -0.5f);    // x, y
-				glVertex2f(0.5f, -0.5f);
-				glVertex2f(0.5f, 0.5f);
-				glVertex2f(-0.5f, 0.5f);
-			glEnd();
+		//void DeleteEntity();
 
-			glFlush();  // Render now
-		}
+
+		void Run();
 	};
+
 }
+
+#include <FiE_ECSManager.hpp>

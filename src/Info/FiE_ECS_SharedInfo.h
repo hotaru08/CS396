@@ -42,6 +42,4 @@ namespace FireflyEngine::sharedinfo
 	// Entity												  
 	constexpr auto max_num_entity_per_pool_v		= 1000;	  //<! Max number of entities in each memory Pool
 	constexpr auto max_num_entity_total_v			= 10000;  //<! Max number of entities that can be generated at a time
-
-	constexpr auto empty_lambda_v					= [](){}; //<! Type definition of an empty lambda
 }

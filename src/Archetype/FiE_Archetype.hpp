@@ -29,6 +29,11 @@ namespace FireflyEngine::archetype
 		}
 	}
 
+	sharedinfo::entity_index_t Archetype::AddNewEntityData() noexcept
+	{
+		return m_currPool.Append();
+	}
+
 	void Archetype::DestroyEntity(entity::Entity& _entity) noexcept
 	{
 		assert(_entity.IsAlive());
@@ -44,8 +49,6 @@ namespace FireflyEngine::archetype
 
 	void Archetype::UpdateStructuralChanges() noexcept
 	{
-
-
 		// Delete entities that are to be deleted
 		const auto size = m_toDeleteEntities.size();
 		for (unsigned i = 0; i < size; ++i)
@@ -54,10 +57,11 @@ namespace FireflyEngine::archetype
 		}
 	}
 
-	template < tools::traits::is_void_fn CallbackType>
-	inline entity::Entity& Archetype::CreateEntity(CallbackType&& _callbackFunc) noexcept
+
+
+	template<tools::traits::is_empty_fn CallbackType>
+	inline void Archetype::AccessGuard(CallbackType&& _callbackFunc) noexcept
 	{
-		_callbackFunc();
-		return {};
+
 	}
 }

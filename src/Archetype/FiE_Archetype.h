@@ -13,7 +13,7 @@ Description:
 
 namespace FireflyEngine::entity
 {
-	class Manager;
+	struct Manager;
 }
 
 namespace FireflyEngine::archetype
@@ -48,9 +48,9 @@ namespace FireflyEngine::archetype
 		// Archetype Functions
 		// ------------------------------------------------------------------------
 
-		// Creates a new entity of current archetype
-		template < tools::traits::is_void_fn CallbackType >
-		entity::Entity& CreateEntity(CallbackType&& _callbackFunc) noexcept;
+		// Appends a new entity ( the components infos that the entities has to pool)
+		sharedinfo::entity_index_t AddNewEntityData() noexcept;
+		
 
 		// Destroys an entity of current archetype
 		void DestroyEntity(entity::Entity& _entity) noexcept;
@@ -60,11 +60,12 @@ namespace FireflyEngine::archetype
 		// Structural Changes Functions
 		// ------------------------------------------------------------------------	 
 
-		// 
+		// Update changes that would cause structural updates, leading to UDB
 		void UpdateStructuralChanges() noexcept;
 
+		// Ensure that only 
 		template < tools::traits::is_empty_fn CallbackType = sharedinfo::empty_lambda_t >
-		void AccessGuard() noexcept;
+		void AccessGuard(CallbackType&& _callbackFunc = sharedinfo::empty_lambda_t{}) noexcept;
 
 	private:
 
@@ -74,10 +75,8 @@ namespace FireflyEngine::archetype
 									     
 		entity::Manager&			     m_entityManager;	  //<! Reference to manager that handles the entities
 		archetype::Pool					 m_currPool;		  //<! Pool that manages the components of archetype
-		//std::list<archetype::Pool>	 m_poolList;	
 		std::uint32_t				     m_processesRunning;  //<! Number of systems running, to ensure only update after all systems
 	};
-
 }
 
 #include <Archetype\FiE_Archetype.hpp>
