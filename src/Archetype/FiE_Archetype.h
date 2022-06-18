@@ -33,7 +33,7 @@ namespace FireflyEngine::archetype
 		// ------------------------------------------------------------------------
 
 		Archetype(
-			const std::span < component_info_t >& _componentInfos,
+			const std::span < component_info_t > _componentInfos,
 			const tools::Bits& _bits,
 			entity::Manager& _entityManager) noexcept;
 
@@ -49,21 +49,25 @@ namespace FireflyEngine::archetype
 		// ------------------------------------------------------------------------
 
 		// Appends a new entity ( the components infos that the entities has to pool)
-		sharedinfo::entity_index_t AddNewEntityData() noexcept;
-		
+		sharedinfo::entity_index_t AddNewEntity() noexcept;
 
+		// Gets the component of an Entity
+		template < typename Component >
+		Component& GetComponent(const sharedinfo::entity_index_t _entityIndex) const noexcept;
+		
 		// Destroys an entity of current archetype
 		void DestroyEntity(entity::Entity& _entity) noexcept;
 
 
 		// ------------------------------------------------------------------------
 		// Structural Changes Functions
-		// ------------------------------------------------------------------------	 
+		// ------------------------------------------------------------------------	
 
 		// Update changes that would cause structural updates, leading to UDB
 		void UpdateStructuralChanges() noexcept;
 
-		// Ensure that only 
+		// Ensure that only when this archetype is not being used by anything else,
+		// then update changes that disrupts structure of systems using this archetype
 		template < tools::traits::is_empty_fn CallbackType = sharedinfo::empty_lambda_t >
 		void AccessGuard(CallbackType&& _callbackFunc = sharedinfo::empty_lambda_t{}) noexcept;
 
@@ -76,6 +80,7 @@ namespace FireflyEngine::archetype
 		entity::Manager&			     m_entityManager;	  //<! Reference to manager that handles the entities
 		archetype::Pool					 m_currPool;		  //<! Pool that manages the components of archetype
 		std::uint32_t				     m_processesRunning;  //<! Number of systems running, to ensure only update after all systems
+
 	};
 }
 

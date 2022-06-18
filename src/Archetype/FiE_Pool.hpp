@@ -28,7 +28,7 @@ namespace FireflyEngine::archetype
 	// Member Functions
 	// ------------------------------------------------------------------------
 
-	inline Pool::Pool(const std::span < component_info_t >& _componentInfos) noexcept
+	inline Pool::Pool(const std::span < component_info_t > _componentInfos) noexcept
 		: m_numEntities{ 0 },
 		  m_pComponents{ }
 	{
@@ -208,7 +208,7 @@ namespace FireflyEngine::archetype
 		requires std::is_same_v< Component, std::decay_t< Component > >
 	inline Component& 
 	Pool::GetComponent(
-		const FireflyEngine::sharedinfo::entity_index_t& _entityIndex) const noexcept
+		const FireflyEngine::sharedinfo::entity_index_t _entityIndex) const noexcept
 	{	
 		const auto& info = component::info_v< Component >;
 		const auto typeIndex = FindComponentTypeIndex(info.m_uid);

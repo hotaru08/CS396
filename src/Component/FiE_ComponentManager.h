@@ -15,18 +15,13 @@ namespace FireflyEngine::component
 	// ------------------------------------------------------------------------
 	// Manager that handles the components
 	// ------------------------------------------------------------------------
-	class Manager final
+	struct Manager final
 	{
-		inline static sharedinfo::component_uid_t m_numComponents = 0;		  //<! How many unqiue components are registered
-
-		// For internally registering component
-		template < typename Component >
-		void RegisterComponent() noexcept;
-
-	public:
-
-		// Rule of 5 - constructor, copy, move
-		Manager()												= default;
+		// ------------------------------------------------------------------------
+		// Constructors / Destructor
+		// ------------------------------------------------------------------------
+		
+		Manager() noexcept										= default;
 		Manager(const Manager& _otherMgr) noexcept				= delete; // Unable to copy, only 1 manager
 		Manager& operator=(const Manager& _otherMgr) noexcept	= delete;
 
@@ -34,9 +29,21 @@ namespace FireflyEngine::component
 		Manager& operator=(const Manager&& _otherMgr) noexcept	= delete;
 
 
-		// Exposed to register all possible components
+		// ------------------------------------------------------------------------
+		// Component Functions
+		// ------------------------------------------------------------------------
+
+		// Registers components defined
 		template < typename... Components >
 		void RegisterComponents() noexcept;
+
+	private:
+
+		inline static sharedinfo::component_uid_t m_numComponents = 0; //<! How many unqiue components are registered
+
+		// For internally registering component
+		template < typename Component >
+		void RegisterComponent() noexcept;
 	};
 }
 

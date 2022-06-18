@@ -14,17 +14,48 @@ namespace FireflyEngine::ECS
 {
 	struct Manager final
 	{
-		entity::Manager		m_entityManager;
-		component::Manager	m_componentManager;
-		system::Manager		m_systemManager;
+		// ------------------------------------------------------------------------
+		// Constructors / Destructor
+		// ------------------------------------------------------------------------
+		
+		Manager() noexcept;
+		Manager(const Manager& _otherMgr) noexcept				= delete; // Unable to copy, only 1 manager
+		Manager& operator=(const Manager& _otherMgr) noexcept	= delete;
 
+		Manager(const Manager&& _otherMgr) noexcept				= delete; // Unable to move, only 1 manager
+		Manager& operator=(const Manager&& _otherMgr) noexcept	= delete;
+
+
+		// ------------------------------------------------------------------------
+		// Interaction Functions
+		// ------------------------------------------------------------------------
+
+		// Creates a new entity
 		template < typename... Components, tools::traits::is_empty_fn Callback = sharedinfo::empty_lambda_t >
 		entity::Entity CreateEntity(Callback&& _callback = sharedinfo::empty_lambda_t{});
 
-		//void DeleteEntity();
+		// Registers the components defined by user
+		template < typename... Components >
+		void RegisterComponents() noexcept;
+
+		// Registers the systems defined by user
+		template < typename... Systems>
+		void RegisterSystems() noexcept;
 
 
-		void Run();
+
+		// ------------------------------------------------------------------------
+		// Other Functions
+		// ------------------------------------------------------------------------
+
+		// Updates manager every frame to run it 
+		void Run() noexcept;
+
+	private:
+
+		std::unique_ptr<entity::Manager>		m_entityManager;	//<! Manager that handles entites
+		std::unique_ptr<component::Manager>		m_componentManager; //<! Manager that handles components
+		std::unique_ptr<system::Manager>		m_systemManager;    //<! Manager that handles systems
 	};
 
 }

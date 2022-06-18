@@ -13,8 +13,10 @@ namespace FireflyEngine::component
 	// ------------------------------------------------------------------------
 	// Information for managing data of a component (type erasure)
 	// ------------------------------------------------------------------------
-	class Info final
+	struct Info final
 	{
+	private:
+
 		// Aliases of function type declarations
 		using constructor_fn	 = void(std::byte* _src) noexcept;
 		using destructor_fn		 = void(std::byte* _src) noexcept;

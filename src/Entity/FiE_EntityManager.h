@@ -14,14 +14,16 @@ Description:
 
 namespace FireflyEngine::entity
 {
+	// ------------------------------------------------------------------------
+	// Manager that handles the entities and archetypes
+	// ------------------------------------------------------------------------
 	struct Manager final
 	{
 		// ------------------------------------------------------------------------
 		// Constructors / Destructor
 		// ------------------------------------------------------------------------
 		
-		// Rule of 5 - constructor, copy, move
-		Manager()												= default;
+		Manager() noexcept;
 		Manager(const Manager& _otherMgr) noexcept				= delete; // Unable to copy, only 1 manager
 		Manager& operator=(const Manager& _otherMgr) noexcept	= delete;
 
@@ -41,19 +43,33 @@ namespace FireflyEngine::entity
 		>
 		entity::Entity CreateEntity(CallbackType&& _callbackFunc = sharedinfo::empty_lambda_t{}) noexcept;
 		
-		// DeleteEntity
-		
 		
 
 	private:
 
+		//<! Alias to component's imfo
+		using component_info_t = const component::Info* const;							
+
+		std::vector< std::unique_ptr< archetype::Archetype > > m_archetypes;         //<! Container storing all archetypes of entities
+		std::vector< tools::Bits >							   m_bits;			     //<! Container storing all archetypes signatures
+		std::unique_ptr<EntityInfo[]>						   m_entityInfos;		 //<! Pointer to container storing all actual entities information
+		sharedinfo::entity_index_t							   m_nextEmptyInfoIndex; //<! Index of next free slot in container of entities information
 
 
-		std::vector< std::unique_ptr< archetype::Archetype > > m_archetypes;             //<! Container storing all archetypes of entities
-		std::vector< tools::Bits >							   m_bits;			         //<! Container storing all archetypes signatures
-		std::unique_ptr<GlobalEntity[]>						   m_globalEntities;         //<! Pointer to container storing all global entities
-		sharedinfo::entity_index_t							   m_emptyGlobalEntityIndex; //<! Index of next free slot in container of global entities
+		// ------------------------------------------------------------------------
+		// Helper Functions
+		// ------------------------------------------------------------------------
 
+		// Retrieves the details of the specified entity
+		const entity::EntityInfo& GetEntityInfo(const entity::Entity& _entity) const noexcept;
+
+		// Retrieves archetype that will be interacted with of entities
+		// If archetype does not exist, create a new archetype and retrieves the newly created archetype
+		//archetype::Archetype RetrieveArchetype(const std::span< component_info_t > _componentInfos) noexcept;
+
+		// Wrapper for retrieving archetype based on components' type
+		//template < typename... Components >
+		//archetype::Archetype RetrieveArchetype() noexcept;
 	};
 }
 

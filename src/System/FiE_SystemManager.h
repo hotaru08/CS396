@@ -5,9 +5,8 @@ Project:	CS396 Assignment 01
 
 Description:
 
-	Manager that handles the interaction with systems.
-	Actions includes:
-		- Registering of systems
+	Manager that handles the interaction with systems, running when every
+	update loop to update logic in the systems.
 
 ******************************************************************************/
 #pragma once
@@ -17,13 +16,13 @@ namespace FireflyEngine::system
 	// ------------------------------------------------------------------------
 	// Manager that handles the components
 	// ------------------------------------------------------------------------
-	class Manager final
+	struct Manager final
 	{
-		//<! How many unqiue systems are registered
-		inline static sharedinfo::system_uid_t m_numSystems; 
-
-
-		// Rule of 5 - constructor, copy, move
+		// ------------------------------------------------------------------------
+		// Constructors / Destructor
+		// ------------------------------------------------------------------------
+		
+		Manager() noexcept										= default;
 		Manager(const Manager& _otherMgr) noexcept				= delete; // Unable to copy, only 1 manager
 		Manager& operator=(const Manager& _otherMgr) noexcept	= delete;
 
@@ -31,17 +30,29 @@ namespace FireflyEngine::system
 		Manager& operator=(const Manager&& _otherMgr) noexcept	= delete;
 
 
-		// For internally registering a system
-		template < typename System >
-		void RegisterSystem() noexcept;
+		// ------------------------------------------------------------------------
+		// System Functions
+		// ------------------------------------------------------------------------
 
-	public:
-
-		Manager()												= default;
-
-		// Exposed to register all possible systems
-		template < typename... Systems >
+		// Registers systems defined
+		template < typename... Components >
 		void RegisterSystems() noexcept;
+
+
+		// ------------------------------------------------------------------------
+		// Other Functions
+		// ------------------------------------------------------------------------
+
+		// Run all the systems that are registered to system manager
+		void RunAllSystems() noexcept { }
+
+	private:
+
+		
+
+		// For internally registering component
+		template < typename Component >
+		void RegisterSystem() noexcept;
 	};
 }
 

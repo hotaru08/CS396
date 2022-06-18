@@ -27,7 +27,7 @@ namespace FireflyEngine::archetype
 		// Constructors / Destructor
 		// ------------------------------------------------------------------------
 
-		Pool(const std::span < component_info_t >& _componentInfos) noexcept;
+		Pool(const std::span < component_info_t > _componentInfos) noexcept;
 		~Pool() noexcept;
 
 		Pool() noexcept										= delete;
@@ -68,7 +68,7 @@ namespace FireflyEngine::archetype
 		// Retrieves the specified component at specified entity index
 		template < typename Component >
 			requires std::is_same_v< Component, std::decay_t< Component > >
-		Component& GetComponent(const sharedinfo::entity_index_t& _entityIndex) const noexcept;
+		Component& GetComponent(const sharedinfo::entity_index_t _entityIndex) const noexcept;
 
 
 	private:

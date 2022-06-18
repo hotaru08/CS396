@@ -31,6 +31,11 @@ namespace FireflyEngine::entity
 				sharedinfo::entity_valid_t	m_generation  : 31,	//<! ID of generated entity
 											m_isAlive	  : 1;	//<! Flag checking if entity is alive
 			};
+
+			constexpr bool operator==(const validation _otherValidation) const noexcept
+			{
+				return m_validationID == _otherValidation.m_validationID;
+			}
 		};
 		static_assert
 		(
@@ -42,7 +47,7 @@ namespace FireflyEngine::entity
 		sharedinfo::entity_id_t				m_entityID;			//<! Index of entity
 		struct
 		{
-			sharedinfo::entity_index_t		m_globalIndex;		//<! Index of entity found in storage container
+			sharedinfo::entity_index_t		m_infoIndex;		//<! Index of where entity is stored in container of all entities
 			validation						m_validation;		//<! Check for validness of entity
 		};
 
@@ -68,10 +73,10 @@ namespace FireflyEngine::entity
 	// ------------------------------------------------------------------------
 	// Global Entity Information ( wrapper to refer to internal Entity Data)
 	// ------------------------------------------------------------------------
-	struct GlobalEntity final
+	struct EntityInfo final
 	{
 		archetype::Archetype*		m_pArchetype;		//<! Pointer to corresponding archetype of entity
-		std::int32_t				m_entIndexInPool;	//<! Entity index in archetype's Pool
-		sharedinfo::entity_valid_t	m_validation;		//<! Validation ID of entity
+		sharedinfo::entity_index_t	m_entIndexInPool;	//<! Entity index in archetype's Pool
+		entity::Entity::validation	m_validation;		//<! Validation ID of entity
 	};
 }

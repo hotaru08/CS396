@@ -10,6 +10,13 @@ Description:
 ******************************************************************************/
 namespace FireflyEngine::ECS
 {
+	Manager::Manager() noexcept
+	{
+		// Register the entity as a component, for easier interaction
+		// between entity and its information
+		m_componentManager->RegisterComponents<entity::Entity>();
+	}
+
 	template<typename ...Components, tools::traits::is_empty_fn Callback>
 	inline entity::Entity Manager::CreateEntity(Callback&& _callback)
 	{
@@ -17,8 +24,8 @@ namespace FireflyEngine::ECS
 
 	}
 
-	void Manager::Run()
+	void Manager::Run() noexcept
 	{
-
+		m_systemManager->RunAllSystems();
 	}
 }

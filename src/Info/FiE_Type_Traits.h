@@ -18,9 +18,17 @@ namespace FireflyEngine::tools
 		// --------------------------------------------------------------------------
 		// Type Traits
 		// --------------------------------------------------------------------------
-		template < typename Type >
-		using base_type_t = std::remove_pointer_t< std::decay_t< Type > >;
+
+		template < typename T >
+		using base_type_t = std::remove_pointer_t< std::decay_t< T > >;
+
+		template < typename T >
+		concept is_base_type = requires
+		{
+			{ std::is_same_v< T, base_type_t< T > > };
+		};
 		
+
 		// --------------------------------------------------------------------------
 		// Function Traits
 		// --------------------------------------------------------------------------

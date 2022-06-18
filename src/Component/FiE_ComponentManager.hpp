@@ -14,17 +14,18 @@ namespace FireflyEngine::component
 	inline void Manager::RegisterComponent() noexcept
 	{
 		// Reference to component's information
-		constexpr auto& uid = info_v< Component >.m_uid;
-		if constexpr (uid != FireflyEngine::sharedinfo::invalid_info_v)
+		if constexpr (info_v< Component >.m_uid != FireflyEngine::sharedinfo::invalid_info_v)
 			return;
 
 		// Set UID of component, adding to unique components count
-		uid = m_numComponents++;
+		info_v< Component >.m_uid = m_numComponents++;
 	}
 
 	template < typename... Components >
 	inline void Manager::RegisterComponents() noexcept
 	{
+		// Register Entity as a component so as to allow for easier access between
+		// entity and its info
 		(RegisterComponent< Components >(), ...);
 	}
 }
