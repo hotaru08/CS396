@@ -100,6 +100,7 @@ project "CS396_ECS_v1"
 
 	postbuildcommands
 	{
+		"{copy} ../../dependencies/freeglut_lib_bin/bin/freeglut.dll bin/%{cfg.buildcfg}",
 		"{copy} ../../dependencies/freeglut_lib_bin/bin/freeglutd.dll bin/%{cfg.buildcfg}"
 	}
 
@@ -110,5 +111,6 @@ project "CS396_ECS_v1"
 
 	postbuildcommands
 	{
-		"{copy} /../../dependencies/freeglut_lib_bin/bin/freeglut.dll bin/%{cfg.buildcfg}"
+		"{copy} ../../dependencies/freeglut_lib_bin/bin/freeglut.dll bin/%{cfg.buildcfg}",
+		"{copy} ../../dependencies/freeglut_lib_bin/bin/freeglutd.dll bin/%{cfg.buildcfg}"
 	}

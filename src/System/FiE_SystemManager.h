@@ -34,24 +34,25 @@ namespace FireflyEngine::system
 		// System Functions
 		// ------------------------------------------------------------------------
 
-		// Registers systems defined
-		template < typename... Components >
-		void RegisterSystems() noexcept;
-
+		// For registering all the systems
+		template < typename... Systems >
+		void RegisterSystems(ECS::Manager& _ecsManager) noexcept;
+		
 
 		// ------------------------------------------------------------------------
 		// Other Functions
 		// ------------------------------------------------------------------------
 
 		// Run all the systems that are registered to system manager
-		void RunAllSystems() noexcept { }
+		void RunAllSystems() noexcept;
 
 	private:
-
 		
+		std::vector < system::Info > m_systems; //<! Container storing all the systems
 
-		// For internally registering component
-		template < typename Component >
-		void RegisterSystem() noexcept;
+		// Internal Register
+		template < typename System >
+			requires std::derived_from< System, BaseSystem >
+		void RegisterSystem(ECS::Manager& _ecsManager) noexcept;
 	};
 }

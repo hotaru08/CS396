@@ -51,16 +51,25 @@ namespace FireflyEngine::ECS
 		m_entityManager->FindEntity(_entity);
 	}
 
+	template < typename CallbackType>
+	void Manager::ForEachEntity(const query::instance& _query, CallbackType&& _callback)
+	{
+		// Based on Callbacktype's return type, the respective for each will be caused
+		m_entityManager->ForEachEntity(m_entityManager->SearchForArchetypeWith(_query), _callback);
+	}
+
+	// ------------------------------------------------------------------------
+
 	template < typename... Components >
 	void Manager::RegisterComponents() noexcept
 	{
 		m_componentManager->RegisterComponents< Components... >();
 	}
 
-	template < typename... Components >
+	template < typename... Systems >
 	void Manager::RegisterSystems() noexcept
 	{
-		m_systemManager->RegisterSystems< Components... >();
+		m_systemManager->RegisterSystems< Systems... >(*this);
 	}
 
 	void Manager::Run() noexcept

@@ -11,13 +11,34 @@ Description:
 namespace FireflyEngine::system
 {
 	template < typename System >
-	inline void Manager::RegisterSystem() noexcept
+		requires std::derived_from< System, BaseSystem >
+	void Manager::RegisterSystem(ECS::Manager& _ecsManager) noexcept
 	{
+		m_systems.emplace_back
+		(
+			// creating system info eg. Info
+			Info
+			{
+			    .m_updateFn = 
+					[](BaseSystem& _system) noexcept
+					{
+						static_cast< details::CompletedSystem< System >& >( _system ).Run();
+					},
+				.m_system	= std::make_unique< details::CompletedSystem< System > >(_ecsManager)
+			}
+		);
 	}
 
+
 	template < typename... Systems >
-	inline void Manager::RegisterSystems() noexcept
+	void Manager::RegisterSystems(ECS::Manager& _ecsManager) noexcept
 	{
-		(RegisterSystem< Systems >(), ...);
+		(RegisterSystem<Systems>(_ecsManager), ...);
+	}
+
+	void Manager::RunAllSystems() noexcept
+	{
+		for (const auto& system : m_systems)
+			system.m_updateFn( *system.m_system );
 	}
 }

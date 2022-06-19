@@ -1,3 +1,4 @@
+#include "FiE_Archetype.h"
 /******************************************************************************
 filename:	FiE_Archetype.hpp
 author:		Jolyn Wong Kaiyi, wong.k@digipen.edu
@@ -36,11 +37,16 @@ namespace FireflyEngine::archetype
 
 	void Archetype::DestroyEntity(const entity::Entity& _entity) noexcept
 	{
-		assert(_entity.IsDead());
+		assert(_entity.IsDead() && "Trying to delete an entity that is not supposed to be deleted");
 		m_toDeleteEntities.emplace_back(_entity);
 
 		// If all systems has finished updating, update changes to structure / entities
 		if (!m_processesRunning) UpdateStructuralChanges();
+	}
+
+	archetype::Pool& Archetype::GetPool() noexcept
+	{
+		return m_currPool;
 	}
 
 	template < typename Component >
@@ -86,6 +92,6 @@ namespace FireflyEngine::archetype
 		_callbackFunc();
 
 		// If all systems has finished updating, update changes to structure / entities
-		if (!--processesRunning) UpdateStructuralChanges();
+		if (!--m_processesRunning) UpdateStructuralChanges();
 	}
 }

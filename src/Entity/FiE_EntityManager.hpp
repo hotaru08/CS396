@@ -48,7 +48,7 @@ namespace FireflyEngine::entity
 			if (receivedCompSignature != signature)
 				continue;
 
-			const unsigned index = (&signature) - m_archetypeSignatures.data();
+			const auto index = static_cast<size_t>((&signature) - m_archetypeSignatures.data());
 			return *m_archetypes[index];
 		}
 
@@ -203,7 +203,7 @@ namespace FireflyEngine::entity
 
 		entityInfo.m_pArchetype->AccessGuard
 		(
-			[&] < typename... Components > ( std::tuple< Components... >* )
+			[&] < typename... Components > ( std::tuple< Components... >* ) constexpr noexcept
 			{
 				_callback(entityInfo.m_pArchetype->GetComponent< 
 					std::remove_reference_t< Components > 
@@ -270,5 +270,158 @@ namespace FireflyEngine::entity
 		}
 
 		return std::move(foundArchs);
+	}
+
+	template < typename CallbackType>
+		requires tools::traits::has_functor< CallbackType > &&
+				 std::is_same_v< typename tools::traits::fn_traits< CallbackType >::return_type_t, bool >
+	void Manager::ForEachEntity(const std::vector<archetype::Archetype*>& _archs, CallbackType&& _callback)
+	{
+		using args_types_t = tools::traits::fn_traits< CallbackType >::args_types_t;
+
+		for (const auto& arch : _archs)
+		{
+			// 1. Retrieve the components' pool of this archetype
+			const archetype::Pool& pool = arch->GetPool();
+			auto pStartOfComponentPools = 
+			[&] < typename... Components > ( std::tuple< Components... >* ) constexpr noexcept
+			{
+				return std::array
+				{
+					[&] < typename Component >( ) constexpr noexcept
+					{
+						const std::int32_t index = pool.FindComponentTypeIndex(component::info_v< Component >.m_uid);
+
+						if constexpr (!std::is_pointer_v< Component >)
+							return pool.GetComponentPool(index);
+
+						else
+							return index < 0 ? nullptr : pool.GetComponentPool(index);
+
+					} .operator() < Components > () ...
+				};
+
+			} ( tools::traits::null_tuple_v < args_types_t > );
+
+
+			// 2. Call the callback, and apply it to the components of the found archetypes
+			bool foundEntity = false;
+			arch->AccessGuard
+			(
+				[&]()
+				{
+					// iterate though each entity and apply callback to them
+					for (sharedinfo::entity_index_t i = pool.GetSize(); i; --i)
+					{
+						if ([&] < typename... Components >(std::tuple< Components... >*) constexpr noexcept -> bool
+						{
+							return _callback
+							(
+								[&]< typename Component >( ) constexpr noexcept -> Component
+								{
+									auto& currLocInPool = pStartOfComponentPools[ tools::traits::tuple_to_index_v< Component, args_types_t > ];
+									
+									// Unable to find component pool, return empty component
+									if constexpr (std::is_pointer_v< Component > && !currLocInPool)
+										return reinterpret_cast< Component >(nullptr);
+
+									// Move to next entity
+									auto prevLoc   = currLocInPool;
+									currLocInPool += sizeof( std::decay_t< Component > );
+
+									if constexpr (std::is_pointer_v< Component >)
+										return reinterpret_cast< Component >(prevLoc);
+
+									else
+										return reinterpret_cast< Component >(*prevLoc);
+
+								} .operator() < Components >() ...
+							);
+
+						} ( tools::traits::null_tuple_v < args_types_t > ) )
+						{
+							foundEntity = true;
+							break;
+						}
+					}
+				}
+			);
+
+			// No need to iterate through the other archetype as found the entity that is to be modified
+			if (foundEntity) break;
+		}
+	}
+
+
+	template < typename CallbackType>
+		requires tools::traits::has_functor< CallbackType >&&
+				 std::is_same_v< typename tools::traits::fn_traits< CallbackType >::return_type_t, void >
+	void Manager::ForEachEntity(const std::vector<archetype::Archetype*>& _archs, CallbackType&& _callback)
+	{
+		using args_types_t = tools::traits::fn_traits< CallbackType >::args_types_t;
+
+		for (const auto& arch : _archs)
+		{
+			// 1. Retrieve the components' pool of this archetype
+			const archetype::Pool& pool = arch->GetPool();
+			auto pStartOfComponentPools = 
+			[&] < typename... Components > ( std::tuple< Components... >* ) constexpr noexcept
+			{
+				return std::array
+				{
+					[&] < typename Component > ( ) constexpr noexcept
+					{
+						const std::int32_t index = pool.FindComponentTypeIndex(component::info_v< Component >.m_uid);
+
+						if constexpr (!std::is_pointer_v< Component >)
+							return pool.GetComponentPool(index);
+
+						else
+							return index < 0 ? nullptr : pool.GetComponentPool(index);
+
+					} .operator() < Components > () ...
+				};
+
+			} ( tools::traits::null_tuple_v < args_types_t > );
+
+
+			// 2. Call the callback, and apply it to the components of the found archetypes
+			arch->AccessGuard
+			(
+				[&]()
+				{
+					// Iterate though each entity and apply callback to them
+					for (sharedinfo::entity_index_t i = pool.GetSize(); i; --i)
+					{
+						[&] < typename... Components >(std::tuple< Components... >*) constexpr noexcept -> void
+						{
+							_callback
+							(
+								[&]< typename Component >( ) constexpr noexcept -> Component
+								{
+									auto& currLocInPool = pStartOfComponentPools[ tools::traits::tuple_to_index_v< Component, args_types_t > ];
+									
+									// Unable to find component pool, return empty component
+									if constexpr (std::is_pointer_v< Component > && !currLocInPool)
+										return reinterpret_cast< Component >(nullptr);
+
+									// Move to next entity
+									auto prevLoc   = currLocInPool;
+									currLocInPool += sizeof( std::decay_t< Component > );
+
+									if constexpr (std::is_pointer_v< Component >)
+										return reinterpret_cast< Component >(prevLoc);
+
+									else
+										return reinterpret_cast< Component >(*prevLoc);
+
+								} .operator() < Components >() ...
+							);
+
+						} (tools::traits::null_tuple_v < args_types_t >);
+					}
+				}
+			);
+		}
 	}
 }

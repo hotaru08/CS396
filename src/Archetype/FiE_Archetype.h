@@ -60,6 +60,10 @@ namespace FireflyEngine::archetype
 		template < typename Component >
 		constexpr bool CheckArchetypeSignature() const noexcept;
 
+		// Retrieve the component pool that this archetype has
+		archetype::Pool& GetPool() noexcept;
+
+
 		// ------------------------------------------------------------------------
 		// Structural Changes Functions
 		// ------------------------------------------------------------------------

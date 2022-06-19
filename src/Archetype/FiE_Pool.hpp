@@ -1,3 +1,4 @@
+#include "FiE_Pool.h"
 /******************************************************************************
 filename:	FiE_Pool.hpp
 author:		Jolyn Wong Kaiyi, wong.k@digipen.edu
@@ -71,7 +72,7 @@ namespace FireflyEngine::archetype
 
 	inline sharedinfo::entity_index_t Pool::Append() noexcept
 	{
-		assert(m_numEntities < sharedinfo::max_num_entity_per_pool_v - 1);
+		assert(m_numEntities < sharedinfo::max_num_entity_total_v - 1);
 
 		// For each component, get the page to append new entity
 		const auto size = m_pCompInfos.size();
@@ -187,6 +188,11 @@ namespace FireflyEngine::archetype
 	Pool::GetSize() const noexcept
 	{
 		return m_numEntities;
+	}
+
+	std::byte* Pool::GetComponentPool(const std::uint32_t _index) const noexcept
+	{
+		return m_pComponents[_index];
 	}
 
 	inline constexpr std::int32_t

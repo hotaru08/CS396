@@ -94,7 +94,7 @@ namespace FireflyEngine::query
 			} 
 			
 			// Pass the tuple of types to lambda ( tuple* )
-			( tools::traits::null_tuple_v< tools::traits::fn_traits< Function >::args_types_t > ); 
+			( tools::traits::null_tuple_v< tools::traits::fn_traits< Function >::args_types_t > );
 		}
 
 		// Set Query with the types of the arguments of a tuple that contains query types
@@ -130,8 +130,6 @@ namespace FireflyEngine::query
 
 			, ...);
 		}
-
-	private:
 
 		tools::Bits m_mustHaveBits;
 		tools::Bits m_oneOfBits;

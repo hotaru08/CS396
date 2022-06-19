@@ -75,9 +75,20 @@ namespace FireflyEngine::entity
 			const query::instance& _compBitQuery) const noexcept;
 
 
-		// Iterate through archetypes to modify component data --------------------
-		// 
+		// Iterate through entities in archetypes to modify component data --------
+		// Find for a specific entity to interaction with, and when done modifications stop iteration
+		template < typename CallbackType = tools::traits::empty_lambda_t>
+			requires tools::traits::has_functor< CallbackType >&&
+					 std::is_same_v< typename tools::traits::fn_traits< CallbackType >::return_type_t, bool >
+		void ForEachEntity(const std::vector<archetype::Archetype*>& _archs,
+						   CallbackType&& _callback = tools::traits::empty_lambda_t{});
 
+		// Iteracte through all the entities and modify their component data using a callback
+		template < typename CallbackType = tools::traits::empty_lambda_t>
+			requires tools::traits::has_functor< CallbackType >&&
+					 std::is_same_v< typename tools::traits::fn_traits< CallbackType >::return_type_t, void >
+		void ForEachEntity(const std::vector<archetype::Archetype*>& _archs,
+						   CallbackType&& _callback = tools::traits::empty_lambda_t{});
 
 	private:
 

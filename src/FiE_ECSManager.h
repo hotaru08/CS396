@@ -10,6 +10,11 @@ Description:
 ******************************************************************************/
 #pragma once
 
+namespace FireflyEngine::system
+{
+	struct Manager;
+}
+
 namespace FireflyEngine::ECS
 {
 	struct Manager final
@@ -52,6 +57,12 @@ namespace FireflyEngine::ECS
 			requires tools::traits::has_functor< CallbackType >&&
 					 std::is_same_v< typename tools::traits::fn_traits< CallbackType >::return_type_t, void >
 		bool HasEntity(entity::Entity& _entity, CallbackType&& _callback = tools::traits::empty_lambda_t{}) noexcept;
+
+
+		// Based on the query passed, the respective entities that has those components will be looked up
+		// and the components will be modified accordingly, with the callback action applied to them
+		template < typename CallbackType = tools::traits::empty_lambda_t>
+		void ForEachEntity(const query::instance& _query, CallbackType&& _callback = tools::traits::empty_lambda_t{});
 
 
 		// Registers the components defined by user

@@ -53,8 +53,11 @@ Description:
 /* Managers */
 #include <Entity\FiE_EntityManager.h>
 #include <Component\FiE_ComponentManager.h>
-#include <System\FiE_SystemManager.h>
 #include <FiE_ECSManager.h>
+
+/* Systems */
+#include <System\FiE_System.h>
+#include <System\FiE_SystemManager.h>
 
 /* Details */
 #include <Archetype\FiE_Pool.hpp>

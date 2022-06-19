@@ -57,6 +57,9 @@ namespace FireflyEngine::archetype
 		// Retrieves the current number of components used
 		constexpr std::uint32_t GetSize() const noexcept;
 
+		// Retrieves the component pools that this archetype pool points to
+		std::byte* GetComponentPool(const std::uint32_t _index) const noexcept;
+
 
 		// ------------------------------------------------------------------------
 		// Components functions
