@@ -23,9 +23,8 @@ namespace FireflyEngine::archetype
 	// ------------------------------------------------------------------------
 	struct Archetype final
 	{
-		// Aliases of type declarations
-		using component_info_t	= const component::Info*;
-		using info_array_t		= std::array< component_info_t, sharedinfo::max_num_components_per_entity_v >;
+		//<! Aliases of type declarations
+		using component_info_t	= Pool::component_info_t;
 
 
 		// ------------------------------------------------------------------------
@@ -54,26 +53,34 @@ namespace FireflyEngine::archetype
 		// Gets the component of an Entity
 		template < typename Component >
 		Component& GetComponent(const sharedinfo::entity_index_t _entityIndex) const noexcept;
-		
+
 		// Destroys an entity of current archetype
 		void DestroyEntity(entity::Entity& _entity) noexcept;
+
+		// Safety check of the signature of archetype for setting the correct bits of components
+		template < typename Component >
+		constexpr bool CheckArchetypeSignature() const noexcept;
+
 
 
 		// ------------------------------------------------------------------------
 		// Structural Changes Functions
-		// ------------------------------------------------------------------------	
+		// ------------------------------------------------------------------------
 
 		// Update changes that would cause structural updates, leading to UDB
 		void UpdateStructuralChanges() noexcept;
 
 		// Ensure that only when this archetype is not being used by anything else,
 		// then update changes that disrupts structure of systems using this archetype
-		template < tools::traits::is_empty_fn CallbackType = sharedinfo::empty_lambda_t >
+		template < typename CallbackType = sharedinfo::empty_lambda_t >
+		requires
+			tools::traits::has_functor< CallbackType > &&
+			std::is_same_v < typename tools::traits::fn_traits< CallbackType >::return_type_t, void > &&
+			(tools::traits::fn_traits< CallbackType >::args_count_v == 0)
 		void AccessGuard(CallbackType&& _callbackFunc = sharedinfo::empty_lambda_t{}) noexcept;
 
 	private:
 
-		info_array_t				     m_pCompInfos;		  //<! Container storing pointers to components' info
 		tools::Bits					     m_compSignature;	  //<! Bit signature of flagged components that archetype has
 		std::vector<entity::Entity>      m_toDeleteEntities;  //<! Stores the entities that are to be deleted (prevent structural changes)
 									     
@@ -83,5 +90,3 @@ namespace FireflyEngine::archetype
 
 	};
 }
-
-#include <Archetype\FiE_Archetype.hpp>

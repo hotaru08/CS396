@@ -24,7 +24,7 @@ static struct Window
 	std::uint32_t m_posX	= 0;
 	std::uint32_t m_posY	= 0;
 
-} sg_gameWindow;
+} sg_game;
 
 struct Vector2D
 {
@@ -168,10 +168,6 @@ void TestCase2n5()
 	std::cout << "lambda" << std::endl;
 	auto l = []()
 	{
-		return []()
-		{
-			return true;
-		};
 	};
 	std::cout << typeid(FireflyEngine::tools::traits::fn_traits < decltype(l) > ::return_type_t).name() << std::endl;
 
@@ -239,31 +235,56 @@ void TestCase3()
 /* Test 04 - Creating Entities  */
 void TestCase4()
 {
-	std::unique_ptr<FireflyEngine::entity::Manager> inst =
-		std::make_unique<FireflyEngine::entity::Manager>();
+	std::cout << "\033[1m\033[33m" << "\n----- START TEST 04 -----\n" << "\033[0m\033[37m" << std::endl;
+	sg_game.m_ecsManager->RegisterComponents<
+		Position,
+		Rotation,
+		Scale
+	>();
 
-	inst->CreateEntity();								// No Components
-	//inst->CreateEntity< Position, Rotation, Scale >();	// Archtype - Position, Rotation, Scale (create)
-	//inst->CreateEntity(
-	//	[](Position&, Rotation&, Scale&)				// ^, should retrieve existing archetype not create
-	//	{
+	FireflyEngine::entity::Entity ent1 = sg_game.m_ecsManager->CreateEntity<
+		Position,
+		Rotation
+	>();
 
-	//	}
-	//);
+	FireflyEngine::entity::Entity ent2 = sg_game.m_ecsManager->CreateEntity<
+		Rotation,
+		Position
+	>();
+
+	FireflyEngine::entity::Entity ent3 = sg_game.m_ecsManager->CreateEntity<
+		Rotation,
+		Scale
+	>();
+
+	sg_game.m_ecsManager->CreateEntity(
+		[](Position&, Rotation&, Scale&)
+		{
+			std::cout << "Hello from the other sideeeeee" << std::endl;
+		}
+	);
+
+	std::cout << "Ent1: " << ent1.m_infoIndex << " / " << ent1.m_validation.m_generation << std::endl;
+	std::cout << "Ent2: " << ent2.m_infoIndex << " / " << ent2.m_validation.m_generation << std::endl;
+	std::cout << "Ent3: " << ent3.m_infoIndex << " / " << ent3.m_validation.m_generation << std::endl;
+
+	std::cout << "\033[1m\033[33m" << "\n----- END TEST -----\n" << "\033[0m\033[37m" << std::endl;
 }
+
+
 
 void TestCase5()
 {
-	//sg_gameWindow.m_ecsManager->CreateEntity< Position, Rotation, Scale >();
+
 }
 
 void TestCases()
 {
-	TestCase1();
+	//TestCase1();
 	TestCase2();
 	TestCase2n5();
-	TestCase3();
 	TestCase4();
+	TestCase3();
 }
 
 int main(int argc, char** argv)
@@ -278,8 +299,8 @@ int main(int argc, char** argv)
 
 	// Setup Window Instance, Graphics and GameLoop
 	{
-		glutInitWindowSize(sg_gameWindow.m_width, sg_gameWindow.m_height);
-		glutInitWindowPosition(sg_gameWindow.m_posX, sg_gameWindow.m_posY);
+		glutInitWindowSize(sg_game.m_width, sg_game.m_height);
+		glutInitWindowPosition(sg_game.m_posX, sg_game.m_posY);
 	
 		glutInit(&argc, argv);
 		glutCreateWindow("CS396 Assignment 01");
@@ -293,8 +314,8 @@ int main(int argc, char** argv)
 				float fw = static_cast<float>(w);
 				float fh = static_cast<float>(h);
 
-				sg_gameWindow.m_width	= w;
-				sg_gameWindow.m_height	= h;
+				sg_game.m_width	= w;
+				sg_game.m_height	= h;
 				glViewport(0, 0, w, h);
 				glMatrixMode(GL_PROJECTION);
 				glLoadIdentity();
@@ -307,7 +328,7 @@ int main(int argc, char** argv)
 		(
 			[]()
 			{
-				sg_gameWindow.m_ecsManager->Run();
+				sg_game.m_ecsManager->Run();
 			}
 		);
 

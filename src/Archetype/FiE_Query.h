@@ -82,7 +82,7 @@ namespace FireflyEngine::query
 
 						// Type*
 						else if constexpr (std::is_pointer_v< Type >)
-							m_oneOfBits.SetBitsFromComponents< Type >();
+							m_oneOfBits.SetBitsFromComponents< std::remove_pointer_t< Type > >();
 
 						// Type
 						else

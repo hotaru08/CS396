@@ -39,12 +39,11 @@ namespace FireflyEngine::component
 
 	private:
 
-		inline static sharedinfo::component_uid_t m_numComponents = 0; //<! How many unqiue components are registered
+		//<! How many unqiue components are registered
+		inline static sharedinfo::component_uid_t m_numComponents = 0;
 
 		// For internally registering component
 		template < typename Component >
 		void RegisterComponent() noexcept;
 	};
 }
-
-#include <Component\FiE_ComponentManager.hpp>

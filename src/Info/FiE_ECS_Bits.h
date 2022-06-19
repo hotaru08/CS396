@@ -23,14 +23,14 @@ namespace FireflyEngine::tools
 
 
 		// Set bit at the specified index
-		constexpr void setBit(const std::uint32_t _bitIndex) noexcept
+		constexpr void SetBit(const std::uint32_t _bitIndex) noexcept
 		{
 			m_bits[_bitIndex / num_bits_per_bit_chunk_v] |= 
 				(1ULL << (_bitIndex % num_bits_per_bit_chunk_v));
 		}
 
 		// Get bit at the specified index
-		constexpr bool getBit(const std::uint32_t _bitIndex) const noexcept
+		constexpr bool GetBit(const std::uint32_t _bitIndex) const noexcept
 		{
 			return m_bits[_bitIndex / num_bits_per_bit_chunk_v] &
 				(1ULL << (_bitIndex % num_bits_per_bit_chunk_v));
@@ -53,7 +53,7 @@ namespace FireflyEngine::tools
 		template < typename... Components >
 		constexpr void SetBitsFromComponents() noexcept
 		{
-			(setBit(component::info_v< Components >.m_uid), ...);
+			(SetBit(component::info_v< Components >.m_uid), ...);
 		}
 
 		std::array

@@ -44,17 +44,23 @@ Description:
 
 /* Components */
 #include <Component\FiE_Component.h>
-#include <Component\FiE_ComponentManager.h>
 
 /* Archetype */
 #include <Archetype\FiE_Query.h>
 #include <Archetype\FiE_Pool.h>
 #include <Archetype\FiE_Archetype.h>
 
-/* Systems */
-
-
 /* Managers */
 #include <Entity\FiE_EntityManager.h>
+#include <Component\FiE_ComponentManager.h>
 #include <System\FiE_SystemManager.h>
 #include <FiE_ECSManager.h>
+
+/* Details */
+#include <Archetype\FiE_Pool.hpp>
+#include <Entity\FiE_EntityManager.hpp>
+#include <Archetype\FiE_Archetype.hpp>
+
+#include <Component\FiE_ComponentManager.hpp>
+#include <System\FiE_SystemManager.hpp>
+#include <FiE_ECSManager.hpp>

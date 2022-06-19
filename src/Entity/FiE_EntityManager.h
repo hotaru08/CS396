@@ -36,41 +36,57 @@ namespace FireflyEngine::entity
 		// ------------------------------------------------------------------------
 
 		// Creates a new entity with the specified components
-		template
-		<
-			typename... Components, 
-			tools::traits::is_return_void_fn CallbackType = sharedinfo::empty_lambda_t
+		template 
+		< 
+			typename... Components,
+			typename CallbackType = sharedinfo::empty_lambda_t
 		>
-		entity::Entity CreateEntity(CallbackType&& _callbackFunc = sharedinfo::empty_lambda_t{}) noexcept;
+			requires tools::traits::has_functor< CallbackType > &&
+					 std::is_same_v< typename tools::traits::fn_traits< CallbackType >::return_type_t, void >
+		entity::Entity CreateEntity(CallbackType&& _callback = sharedinfo::empty_lambda_t{}) noexcept;
 		
-		
+		// Retrieves the details of the specified entity
+		const entity::EntityInfo& GetEntityInfo(const entity::Entity& _entity) const noexcept;
+
+		// Find an entity and carry out actions on it
+		template < typename CallbackType = sharedinfo::empty_lambda_t>
+			requires tools::traits::has_functor< CallbackType >
+		bool FindEntity(const entity::Entity& _entity, CallbackType&& _callback = sharedinfo::empty_lambda_t{}) const noexcept;
+
+		// Deletes an entity, along with its respective information
+		void DeleteEntity(entity::Entity& _entity) noexcept;
 
 	private:
 
 		//<! Alias to component's imfo
-		using component_info_t = const component::Info* const;							
+		using component_info_t = archetype::Archetype::component_info_t;							
 
-		std::vector< std::unique_ptr< archetype::Archetype > > m_archetypes;         //<! Container storing all archetypes of entities
-		std::vector< tools::Bits >							   m_bits;			     //<! Container storing all archetypes signatures
-		std::unique_ptr<EntityInfo[]>						   m_entityInfos;		 //<! Pointer to container storing all actual entities information
-		sharedinfo::entity_index_t							   m_nextEmptyInfoIndex; //<! Index of next free slot in container of entities information
+		std::vector< std::unique_ptr< archetype::Archetype > > m_archetypes;			//<! Container storing all archetypes of entities
+		std::vector< tools::Bits >							   m_archetypeSignatures;	//<! Container storing all archetypes signatures
+		std::unique_ptr<EntityInfo[]>						   m_entityInfos;			//<! Pointer to container storing all actual entities information
+		sharedinfo::entity_index_t							   m_nextEmptyInfoIndex;	//<! Index of next free slot in container of entities information
 
 
 		// ------------------------------------------------------------------------
 		// Helper Functions
 		// ------------------------------------------------------------------------
 
-		// Retrieves the details of the specified entity
-		const entity::EntityInfo& GetEntityInfo(const entity::Entity& _entity) const noexcept;
-
 		// Retrieves archetype that will be interacted with of entities
 		// If archetype does not exist, create a new archetype and retrieves the newly created archetype
-		//archetype::Archetype RetrieveArchetype(const std::span< component_info_t > _componentInfos) noexcept;
+		archetype::Archetype& RetrieveArchetype(std::span< component_info_t > _componentInfos) noexcept;
 
 		// Wrapper for retrieving archetype based on components' type
-		//template < typename... Components >
-		//archetype::Archetype RetrieveArchetype() noexcept;
+		template < typename... Components >
+		archetype::Archetype& RetrieveArchetype() noexcept;
+
+		// Initialize the information in the global entity pool
+		entity::Entity InitializeEntityInfo(
+			const sharedinfo::entity_index_t _entityIndex,
+			archetype::Archetype& _archetype);
+
+		// Internally, update the information of entities when they are allowed to update
+		// with structural changes
+		void UpdateEntityInfoAfterDelete(const Entity _entity) noexcept;
+		void UpdateEntityInfoAfterDelete(const Entity _entity, Entity& _swapEntity) noexcept;
 	};
 }
-
-#include <Entity\FiE_EntityManager.hpp>

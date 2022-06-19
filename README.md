@@ -23,8 +23,4 @@ of how to use the ECS in that file.
 
 ## Dependencies
 - [freeglut](https://github.com/FreeGLUTProject/freeglut.git)
-
-### Note
-.lib and .dll files of freeglut are included due to freeglut being built using
-cmake. There is no other ways to provide computers with no cmake with the 
-needed files.
+- [freeglut_lib_bin](https://github.com/hotaru08/freeglut_lib_bin.git) (Contains .lib and .dll files)

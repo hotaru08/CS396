@@ -22,12 +22,12 @@ namespace FireflyEngine::tools
 		template < typename T >
 		using base_type_t = std::remove_pointer_t< std::decay_t< T > >;
 
+		//<! Ensures only base class types are used
 		template < typename T >
-		concept is_base_type = requires
-		{
-			{ std::is_same_v< T, base_type_t< T > > };
-		};
-		
+		concept is_using_base_type =
+			(std::is_pointer_v< T > == false) && 
+			(std::is_reference_v< T > == false);
+
 
 		// --------------------------------------------------------------------------
 		// Function Traits
@@ -104,28 +104,24 @@ namespace FireflyEngine::tools
 
 		//<! Defines the constraints for checking if Type is a function
 		template < typename CallbackType >
-		concept is_function = requires
-		{
-			{ std::is_function_v< CallbackType > | has_functor< CallbackType > };
-		};
+		concept is_function = 
+			std::is_function_v< CallbackType > || has_functor< CallbackType >;
+		
 
 		//<! Defines the constraints for a void function ( void(Args ...) )
 		template < typename CallbackType >
-		concept is_return_void_fn = requires
-		{
-			{ std::is_function_v< CallbackType > | has_functor< CallbackType > };
-			{ std::is_same_v <typename fn_traits< CallbackType >::return_type_t, void > };
-		};
+		concept is_return_void_fn = 
+			//std::is_function_v< CallbackType > || has_functor< CallbackType > &&
+			std::is_same_v< fn_traits< CallbackType >::return_type_t, void >;
+		
 
 		//<! Defines the constraints for an empty function ( void(void) )
 		template < typename CallbackType >
-		concept is_empty_fn = requires
-		{
-			{ has_functor< CallbackType > };
-			{ std::is_same_v < fn_traits< CallbackType >::return_type_t, void > };
-			{ fn_traits< CallbackType >::args_count_v == 0 };
-		};
-
+		concept is_empty_fn = 
+			std::is_function_v< CallbackType > || has_functor< CallbackType > &&
+			std::is_same_v < fn_traits< CallbackType >::return_type_t, void > &&
+			fn_traits< CallbackType >::args_count_v == 0;
+		
 
 		// --------------------------------------------------------------------------
 		// Tuple Expressions
@@ -164,7 +160,7 @@ namespace FireflyEngine::tools
 		}
 
 		template < typename SearchType, typename Tuple >
-		constexpr auto tuple_to_index_v = tuple_to_index < SearchType, Tuple >::value;
+		constexpr auto tuple_to_index_v = details::tuple_to_index < SearchType, Tuple >::value;
 
 		template < typename Tuple >
 		constexpr auto null_tuple_v = static_cast< Tuple* >(nullptr);

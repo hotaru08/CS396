@@ -78,5 +78,3 @@ namespace FireflyEngine::archetype
 		std::uint32_t					m_numEntities;	//<! Number of entities in Pool
 	};
 }
-
-#include <Archetype\FiE_Pool.hpp>

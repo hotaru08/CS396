@@ -30,9 +30,24 @@ namespace FireflyEngine::ECS
 		// Interaction Functions
 		// ------------------------------------------------------------------------
 
-		// Creates a new entity
-		template < typename... Components, tools::traits::is_empty_fn Callback = sharedinfo::empty_lambda_t >
-		entity::Entity CreateEntity(Callback&& _callback = sharedinfo::empty_lambda_t{});
+		// Creates a new entity that has the specified component types 
+		template < typename... Components >
+			requires (!std::is_pointer_v< Components > && ...) &&
+					 (!std::is_reference_v< Components > && ...)
+		entity::Entity CreateEntity() noexcept;
+
+		// Creates a new entity with the component deduced from callback function
+		template < typename CallbackType = sharedinfo::empty_lambda_t >
+			requires tools::traits::has_functor< CallbackType > &&
+					 std::is_same_v< typename tools::traits::fn_traits< CallbackType >::return_type_t, void >
+		entity::Entity CreateEntity(CallbackType&& _callback = sharedinfo::empty_lambda_t{}) noexcept;
+
+
+		void DeleteEntity(entity::Entity& _entity) noexcept;
+
+
+
+
 
 		// Registers the components defined by user
 		template < typename... Components >
@@ -41,7 +56,6 @@ namespace FireflyEngine::ECS
 		// Registers the systems defined by user
 		template < typename... Systems>
 		void RegisterSystems() noexcept;
-
 
 
 		// ------------------------------------------------------------------------
@@ -59,5 +73,3 @@ namespace FireflyEngine::ECS
 	};
 
 }
-
-#include <FiE_ECSManager.hpp>

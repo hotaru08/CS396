@@ -55,5 +55,3 @@ namespace FireflyEngine::system
 		void RegisterSystem() noexcept;
 	};
 }
-
-#include <System\FiE_SystemManager.hpp>

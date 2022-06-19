@@ -15,18 +15,12 @@ namespace FireflyEngine::archetype
 		const std::span < component_info_t > _componentInfos,
 		const tools::Bits& _bits,
 		entity::Manager& _entityManager) noexcept
-		: m_pCompInfos			{ },
-		  m_compSignature		{ _bits },
+		: m_compSignature		{ _bits },
 		  m_toDeleteEntities	{ },
 		  m_entityManager		{ _entityManager },
 		  m_currPool			{ _componentInfos },
 		  m_processesRunning	{ 0 }
 	{
-		const auto size = _componentInfos.size();
-		for (unsigned i = 0; i < size; ++i)
-		{
-			m_pCompInfos[i] = _componentInfos[i];
-		}
 	}
 
 	inline sharedinfo::entity_index_t Archetype::AddNewEntity() noexcept
@@ -45,12 +39,14 @@ namespace FireflyEngine::archetype
 		assert(_entity.IsAlive());
 		m_toDeleteEntities.emplace_back(_entity);
 
-		// Set global entity to be not alive in the container that stores all global entities
-
-
 		// If all systems has finished updating, update changes to structure / entities
-		if (!m_processesRunning)
-			UpdateStructuralChanges();
+		if (!m_processesRunning) UpdateStructuralChanges();
+	}
+
+	template < typename Component >
+	constexpr bool Archetype::CheckArchetypeSignature() const noexcept
+	{
+		return m_compSignature.GetBit(component::info_v< Component >.m_uid);
 	}
 
 	void Archetype::UpdateStructuralChanges() noexcept
@@ -59,16 +55,31 @@ namespace FireflyEngine::archetype
 		for (size_t i = 0, size = m_toDeleteEntities.size(); i < size; ++i)
 		{
 			const entity::Entity& currEntity = m_toDeleteEntities[i];
+			const entity::EntityInfo& currEntityInfo = m_entityManager.GetEntityInfo(currEntity);
+			assert(currEntityInfo.m_pArchetype && "Entity does not belong to any archetype.");
 
+			// Delete from pool and handle for any system changes
+			m_currPool.Delete(currEntity.m_infoIndex);
+			if (currEntityInfo.m_entIndexInPool == m_currPool.GetSize())
+			{
+				//SystemDelete
+				continue;
+			}
+
+			// SystemDelete
 		}
+		m_toDeleteEntities.clear();
 	}
 
-	template < tools::traits::is_empty_fn CallbackType >
+	template < typename CallbackType >
+		requires
+			tools::traits::has_functor< CallbackType > &&
+			std::is_same_v < typename tools::traits::fn_traits< CallbackType >::return_type_t, void > &&
+			(tools::traits::fn_traits< CallbackType >::args_count_v == 0)
 	inline void Archetype::AccessGuard(CallbackType&& _callbackFunc) noexcept
 	{
 		++m_processesRunning;
 		_callbackFunc();
-		if (!--processesRunning)
-			UpdateStructuralChanges();
+		if (!--processesRunning) UpdateStructuralChanges();
 	}
 }
