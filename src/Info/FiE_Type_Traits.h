@@ -19,6 +19,9 @@ namespace FireflyEngine::tools
 		// Type Traits
 		// --------------------------------------------------------------------------
 
+		//<! Type definition of an empty lambda
+		using empty_lambda_t = decltype([]() {});
+
 		template < typename T >
 		using base_type_t = std::remove_pointer_t< std::decay_t< T > >;
 

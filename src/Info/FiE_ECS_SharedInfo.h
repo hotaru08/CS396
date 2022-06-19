@@ -24,8 +24,6 @@ namespace FireflyEngine::sharedinfo
 	using component_size_t	= std::uint32_t;				  //<! For storing component size
 															  
 	using system_uid_t		= std::uint32_t;				  //<! Based on max number of systems
-															  
-	using empty_lambda_t	= decltype([](){});				  //<! Type definition of an empty lambda
 
 	// ------------------------------------------------------------------------
 	// Expressions

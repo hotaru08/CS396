@@ -23,7 +23,7 @@ namespace FireflyEngine::archetype
 	{
 	}
 
-	inline sharedinfo::entity_index_t Archetype::AddNewEntity() noexcept
+	inline sharedinfo::entity_index_t Archetype::AddNewPoolEntity() noexcept
 	{
 		return m_currPool.Append();
 	}
@@ -34,9 +34,9 @@ namespace FireflyEngine::archetype
 		return m_currPool.GetComponent< Component >(_entityIndex);
 	}
 
-	void Archetype::DestroyEntity(entity::Entity& _entity) noexcept
+	void Archetype::DestroyEntity(const entity::Entity& _entity) noexcept
 	{
-		assert(_entity.IsAlive());
+		assert(_entity.IsDead());
 		m_toDeleteEntities.emplace_back(_entity);
 
 		// If all systems has finished updating, update changes to structure / entities
@@ -56,17 +56,22 @@ namespace FireflyEngine::archetype
 		{
 			const entity::Entity& currEntity = m_toDeleteEntities[i];
 			const entity::EntityInfo& currEntityInfo = m_entityManager.GetEntityInfo(currEntity);
-			assert(currEntityInfo.m_pArchetype && "Entity does not belong to any archetype.");
+			assert(currEntityInfo.m_pArchetype == this && "Editing current archetype, UDB.");
 
 			// Delete from pool and handle for any system changes
-			m_currPool.Delete(currEntity.m_infoIndex);
-			if (currEntityInfo.m_entIndexInPool == m_currPool.GetSize())
+			m_currPool.Delete(currEntityInfo.m_poolIndex);
+			if (currEntityInfo.m_poolIndex == m_currPool.GetSize())
 			{
-				//SystemDelete
+				// Directly removes entity from component pool and global pool
+				m_entityManager.UpdateEntityInfoAfterDelete(currEntity);
 				continue;
 			}
 
-			// SystemDelete
+			// Swap with 
+			m_entityManager.UpdateEntityInfoAfterDelete(
+				currEntity,
+				m_currPool.GetComponent<entity::Entity>(currEntityInfo.m_poolIndex)
+			);
 		}
 		m_toDeleteEntities.clear();
 	}
@@ -74,12 +79,13 @@ namespace FireflyEngine::archetype
 	template < typename CallbackType >
 		requires
 			tools::traits::has_functor< CallbackType > &&
-			std::is_same_v < typename tools::traits::fn_traits< CallbackType >::return_type_t, void > &&
-			(tools::traits::fn_traits< CallbackType >::args_count_v == 0)
+			std::is_same_v < typename tools::traits::fn_traits< CallbackType >::return_type_t, void >
 	inline void Archetype::AccessGuard(CallbackType&& _callbackFunc) noexcept
 	{
 		++m_processesRunning;
 		_callbackFunc();
+
+		// If all systems has finished updating, update changes to structure / entities
 		if (!--processesRunning) UpdateStructuralChanges();
 	}
 }

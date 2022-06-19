@@ -26,7 +26,6 @@ namespace FireflyEngine::archetype
 		//<! Aliases of type declarations
 		using component_info_t	= Pool::component_info_t;
 
-
 		// ------------------------------------------------------------------------
 		// Constructors / Destructor
 		// ------------------------------------------------------------------------
@@ -47,21 +46,19 @@ namespace FireflyEngine::archetype
 		// Archetype Functions
 		// ------------------------------------------------------------------------
 
-		// Appends a new entity ( the components infos that the entities has to pool)
-		sharedinfo::entity_index_t AddNewEntity() noexcept;
+		// Appends a new entity to the components' pools, along with the components' info
+		sharedinfo::entity_index_t AddNewPoolEntity() noexcept;
 
 		// Gets the component of an Entity
 		template < typename Component >
 		Component& GetComponent(const sharedinfo::entity_index_t _entityIndex) const noexcept;
 
 		// Destroys an entity of current archetype
-		void DestroyEntity(entity::Entity& _entity) noexcept;
+		void DestroyEntity(const entity::Entity& _entity) noexcept;
 
 		// Safety check of the signature of archetype for setting the correct bits of components
 		template < typename Component >
 		constexpr bool CheckArchetypeSignature() const noexcept;
-
-
 
 		// ------------------------------------------------------------------------
 		// Structural Changes Functions
@@ -72,12 +69,11 @@ namespace FireflyEngine::archetype
 
 		// Ensure that only when this archetype is not being used by anything else,
 		// then update changes that disrupts structure of systems using this archetype
-		template < typename CallbackType = sharedinfo::empty_lambda_t >
+		template < typename CallbackType = tools::traits::empty_lambda_t >
 		requires
 			tools::traits::has_functor< CallbackType > &&
-			std::is_same_v < typename tools::traits::fn_traits< CallbackType >::return_type_t, void > &&
-			(tools::traits::fn_traits< CallbackType >::args_count_v == 0)
-		void AccessGuard(CallbackType&& _callbackFunc = sharedinfo::empty_lambda_t{}) noexcept;
+			std::is_same_v < typename tools::traits::fn_traits< CallbackType >::return_type_t, void >
+		void AccessGuard(CallbackType&& _callbackFunc = tools::traits::empty_lambda_t{}) noexcept;
 
 	private:
 
@@ -87,6 +83,5 @@ namespace FireflyEngine::archetype
 		entity::Manager&			     m_entityManager;	  //<! Reference to manager that handles the entities
 		archetype::Pool					 m_currPool;		  //<! Pool that manages the components of archetype
 		std::uint32_t				     m_processesRunning;  //<! Number of systems running, to ensure only update after all systems
-
 	};
 }

@@ -19,6 +19,10 @@ namespace FireflyEngine::entity
 	// ------------------------------------------------------------------------
 	struct Manager final
 	{
+		//<! Alias to component's imfo
+		using component_info_t = archetype::Archetype::component_info_t;
+
+
 		// ------------------------------------------------------------------------
 		// Constructors / Destructor
 		// ------------------------------------------------------------------------
@@ -39,27 +43,43 @@ namespace FireflyEngine::entity
 		template 
 		< 
 			typename... Components,
-			typename CallbackType = sharedinfo::empty_lambda_t
+			typename CallbackType = tools::traits::empty_lambda_t
 		>
-			requires tools::traits::has_functor< CallbackType > &&
-					 std::is_same_v< typename tools::traits::fn_traits< CallbackType >::return_type_t, void >
-		entity::Entity CreateEntity(CallbackType&& _callback = sharedinfo::empty_lambda_t{}) noexcept;
+		requires tools::traits::has_functor< CallbackType > &&
+				 std::is_same_v< typename tools::traits::fn_traits< CallbackType >::return_type_t, void >
+		entity::Entity CreateEntity(CallbackType&& _callback = tools::traits::empty_lambda_t{}) noexcept;
 		
-		// Retrieves the details of the specified entity
-		const entity::EntityInfo& GetEntityInfo(const entity::Entity& _entity) const noexcept;
 
-		// Find an entity and carry out actions on it
-		template < typename CallbackType = sharedinfo::empty_lambda_t>
-			requires tools::traits::has_functor< CallbackType >
-		bool FindEntity(const entity::Entity& _entity, CallbackType&& _callback = sharedinfo::empty_lambda_t{}) const noexcept;
+		// Retrieves the details of the specified entity
+		entity::EntityInfo& GetEntityInfo(const entity::Entity& _entity) const noexcept;
+
 
 		// Deletes an entity, along with its respective information
 		void DeleteEntity(entity::Entity& _entity) noexcept;
 
-	private:
 
-		//<! Alias to component's imfo
-		using component_info_t = archetype::Archetype::component_info_t;							
+		// Find an entity and carry out actions on it
+		template < typename CallbackType = tools::traits::empty_lambda_t>
+			requires tools::traits::has_functor< CallbackType > && 
+					 std::is_same_v< typename tools::traits::fn_traits< CallbackType >::return_type_t, void >
+		bool FindEntity(const entity::Entity& _entity, CallbackType&& _callback = tools::traits::empty_lambda_t{}) const noexcept;
+
+
+		// Search For Entity based on Archetype -----------------------------------
+		// By Component Types
+		template < typename... Components >
+		std::vector<archetype::Archetype*> SearchForArchetypeWith() const noexcept;
+
+		// By Component Bits Query
+		std::vector<archetype::Archetype*> SearchForArchetypeWith(
+			const query::instance& _compBitQuery) const noexcept;
+
+
+		// Iterate through archetypes to modify component data --------------------
+		// 
+
+
+	private:
 
 		std::vector< std::unique_ptr< archetype::Archetype > > m_archetypes;			//<! Container storing all archetypes of entities
 		std::vector< tools::Bits >							   m_archetypeSignatures;	//<! Container storing all archetypes signatures
@@ -73,20 +93,21 @@ namespace FireflyEngine::entity
 
 		// Retrieves archetype that will be interacted with of entities
 		// If archetype does not exist, create a new archetype and retrieves the newly created archetype
-		archetype::Archetype& RetrieveArchetype(std::span< component_info_t > _componentInfos) noexcept;
-
-		// Wrapper for retrieving archetype based on components' type
 		template < typename... Components >
 		archetype::Archetype& RetrieveArchetype() noexcept;
+
 
 		// Initialize the information in the global entity pool
 		entity::Entity InitializeEntityInfo(
 			const sharedinfo::entity_index_t _entityIndex,
 			archetype::Archetype& _archetype);
 
+
 		// Internally, update the information of entities when they are allowed to update
-		// with structural changes
+		// with structural changes (only archetype's structural changes is able to modify these info)
 		void UpdateEntityInfoAfterDelete(const Entity _entity) noexcept;
 		void UpdateEntityInfoAfterDelete(const Entity _entity, Entity& _swapEntity) noexcept;
+
+		friend void archetype::Archetype::UpdateStructuralChanges() noexcept;
 	};
 }

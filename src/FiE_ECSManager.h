@@ -37,16 +37,21 @@ namespace FireflyEngine::ECS
 		entity::Entity CreateEntity() noexcept;
 
 		// Creates a new entity with the component deduced from callback function
-		template < typename CallbackType = sharedinfo::empty_lambda_t >
+		template < typename CallbackType = tools::traits::empty_lambda_t >
 			requires tools::traits::has_functor< CallbackType > &&
 					 std::is_same_v< typename tools::traits::fn_traits< CallbackType >::return_type_t, void >
-		entity::Entity CreateEntity(CallbackType&& _callback = sharedinfo::empty_lambda_t{}) noexcept;
+		entity::Entity CreateEntity(CallbackType&& _callback = tools::traits::empty_lambda_t{}) noexcept;
 
 
+		// Deletes an entity
 		void DeleteEntity(entity::Entity& _entity) noexcept;
 
 
-
+		// Finds for an entity specified, and applies callback to it to modify its info if specified
+		template < typename CallbackType = tools::traits::empty_lambda_t >
+			requires tools::traits::has_functor< CallbackType >&&
+					 std::is_same_v< typename tools::traits::fn_traits< CallbackType >::return_type_t, void >
+		bool HasEntity(entity::Entity& _entity, CallbackType&& _callback = tools::traits::empty_lambda_t{}) noexcept;
 
 
 		// Registers the components defined by user
@@ -62,7 +67,7 @@ namespace FireflyEngine::ECS
 		// Other Functions
 		// ------------------------------------------------------------------------
 
-		// Updates manager every frame to run it 
+		// Called every frame to update manager
 		void Run() noexcept;
 
 	private:
@@ -71,5 +76,4 @@ namespace FireflyEngine::ECS
 		std::unique_ptr<component::Manager>		m_componentManager; //<! Manager that handles components
 		std::unique_ptr<system::Manager>		m_systemManager;    //<! Manager that handles systems
 	};
-
 }

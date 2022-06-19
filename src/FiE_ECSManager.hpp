@@ -15,9 +15,6 @@ namespace FireflyEngine::ECS
 		  m_componentManager	{ std::make_unique<component::Manager>()	},
 		  m_systemManager		{ std::make_unique<system::Manager>()		}
 	{
-		// Register the entity as a component, for easier interaction
-		// between entity and its information
-		m_componentManager->RegisterComponents<entity::Entity>();
 	}
 
 	template < typename... Components >
@@ -39,6 +36,19 @@ namespace FireflyEngine::ECS
 			return m_entityManager->CreateEntity< Components... >(_callback);
 
 		} (tools::traits::null_tuple_v< tools::traits::fn_traits< CallbackType >::args_types_t >);
+	}
+
+	void Manager::DeleteEntity(entity::Entity& _entity) noexcept
+	{
+		m_entityManager->DeleteEntity(_entity);
+	}
+
+	template < typename CallbackType >
+		requires tools::traits::has_functor< CallbackType >&&
+				 std::is_same_v< typename tools::traits::fn_traits< CallbackType >::return_type_t, void >
+	bool Manager::HasEntity(entity::Entity& _entity, CallbackType&& _callback) noexcept
+	{
+		m_entityManager->FindEntity(_entity);
 	}
 
 	template < typename... Components >

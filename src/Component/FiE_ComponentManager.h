@@ -21,7 +21,7 @@ namespace FireflyEngine::component
 		// Constructors / Destructor
 		// ------------------------------------------------------------------------
 		
-		Manager() noexcept										= default;
+		Manager() noexcept;
 		Manager(const Manager& _otherMgr) noexcept				= delete; // Unable to copy, only 1 manager
 		Manager& operator=(const Manager& _otherMgr) noexcept	= delete;
 

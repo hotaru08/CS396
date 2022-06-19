@@ -10,11 +10,18 @@ Description:
 ******************************************************************************/
 namespace FireflyEngine::component
 {
+	Manager::Manager() noexcept
+	{
+		// Register the entity as a component, for easier interaction
+		// between entity and its information
+		RegisterComponents<entity::Entity>();
+	}
+
 	template < typename Component >
 	inline void Manager::RegisterComponent() noexcept
 	{
 		// Reference to component's information
-		if constexpr (info_v< Component >.m_uid != FireflyEngine::sharedinfo::invalid_info_v)
+		if constexpr (info_v< Component >.m_uid != sharedinfo::invalid_info_v)
 			return;
 
 		// Set UID of component, adding to unique components count

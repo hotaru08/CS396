@@ -85,11 +85,6 @@ struct Rotation
 	float m_rz = 45.f;
 };
 
-void Foo()
-{
-	std::cout << "called in function" << std::endl;
-}
-
 /* Test 01 - Registering components */
 void TestCase1()
 {
@@ -221,7 +216,6 @@ void TestCase3()
 		{
 		}
 	);
-
 	std::tuple
 	<
 		FireflyEngine::query::MustHave< Position >,
@@ -257,16 +251,26 @@ void TestCase4()
 		Scale
 	>();
 
-	sg_game.m_ecsManager->CreateEntity(
-		[](Position&, Rotation&, Scale&)
+	FireflyEngine::entity::Entity ent4 = sg_game.m_ecsManager->CreateEntity(
+		[](Position&, Rotation&)
 		{
 			std::cout << "Hello from the other sideeeeee" << std::endl;
 		}
 	);
 
+	sg_game.m_ecsManager->DeleteEntity(ent2);
+
+	ent2 = sg_game.m_ecsManager->CreateEntity<
+		Rotation,
+		Position
+	>();
+
 	std::cout << "Ent1: " << ent1.m_infoIndex << " / " << ent1.m_validation.m_generation << std::endl;
 	std::cout << "Ent2: " << ent2.m_infoIndex << " / " << ent2.m_validation.m_generation << std::endl;
 	std::cout << "Ent3: " << ent3.m_infoIndex << " / " << ent3.m_validation.m_generation << std::endl;
+	std::cout << "Ent4: " << ent4.m_infoIndex << " / " << ent4.m_validation.m_generation << std::endl;
+
+
 
 	std::cout << "\033[1m\033[33m" << "\n----- END TEST -----\n" << "\033[0m\033[37m" << std::endl;
 }

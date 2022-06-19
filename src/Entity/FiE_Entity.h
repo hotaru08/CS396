@@ -29,7 +29,7 @@ namespace FireflyEngine::entity
 			struct
 			{
 				sharedinfo::entity_valid_t	m_generation  : 31,	//<! ID of generated entity
-											m_isAlive	  : 1;	//<! Flag checking if entity is alive
+											m_isDead	  : 1;	//<! Flag checking if entity is alive
 			};
 
 			constexpr bool operator==(const validation _otherValidation) const noexcept
@@ -58,9 +58,9 @@ namespace FireflyEngine::entity
 		}
 
 		// Check if entity is alive
-		constexpr bool IsAlive() const noexcept
+		constexpr bool IsDead() const noexcept
 		{
-			return m_validation.m_isAlive;
+			return m_validation.m_isDead;
 		}
 	};
 	static_assert
@@ -76,7 +76,7 @@ namespace FireflyEngine::entity
 	struct EntityInfo final
 	{
 		archetype::Archetype*		m_pArchetype;		//<! Pointer to corresponding archetype of entity
-		sharedinfo::entity_index_t	m_entIndexInPool;	//<! Entity index in archetype's Pool
+		sharedinfo::entity_index_t	m_poolIndex;	//<! Entity index in archetype's Pool
 		entity::Entity::validation	m_validation;		//<! Validation ID of entity
 	};
 }
